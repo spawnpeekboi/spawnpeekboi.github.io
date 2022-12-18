@@ -1,3 +1,16 @@
 # cutiesquirrel.github.io
 
-you are not suppose to be here
+```
+               _    _                           _                   _ 
+              | |  (_)                         (_)                 | |
+   ___  _   _ | |_  _   ___  ___   __ _  _   _  _  _ __  _ __  ___ | |
+  / __|| | | || __|| | / _ \/ __| / _` || | | || || '__|| '__|/ _ \| |
+ | (__ | |_| || |_ | ||  __/\__ \| (_| || |_| || || |   | |  |  __/| |
+  \___| \__,_| \__||_| \___||___/ \__, | \__,_||_||_|   |_|   \___||_|
+                                     | |                              
+                                     |_|                              
+```
+
+**you are not suppose to be here**
+
+[here](https://cutiesquirrel.github.io) is what you should go to
