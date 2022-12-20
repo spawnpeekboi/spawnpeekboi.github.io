@@ -4,17 +4,68 @@
     main
 </title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<body>
-    <div class="w3-top">
-        <div class="w3-bar w3-border w3-light-gr3ey w3-center">
-            <a href="#" style="width:33.33%" class="w3-bar-item w3-button w3-mobile w3-deep-purple">Home</a>
-            <a href="#" style="width:33.33%" class="w3-bar-item w3-button w3-mobile">About</a>
-            <a href="#" style="width:33.33%" class="w3-bar-item w3-button w3-mobile">Social Profile</a>
-        </div>
+<head>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+    <style>
+        .title_bg {
+            width: auto;
+            height: 300px;
+            padding: 10px;
+            background-color: LightGray;
+            margin: 0;
+        }
 
-        <div class="w3-container">
-        </div>
-    </div>
-</body>
+        .tracking-in-expand {
+            -webkit-animation: tracking-in-expand 5s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+            font-family: "Audiowide", monospace;
+            text-align: center;
+            padding: 100px;
+        }
+
+        @-webkit-keyframes tracking-in-expand {
+            0% {
+                letter-spacing: -0.5em;
+                opacity: 0;
+            }
+
+            40% {
+                opacity: 0.6;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes tracking-in-expand {
+            0% {
+                letter-spacing: -0.5em;
+                opacity: 0;
+            }
+
+            40% {
+                opacity: 0.6;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+        <body>
+            <div class="w3-top">
+                <div class="w3-bar w3-border w3-light-gr3ey w3-center">
+                    <a href="#" style="width:33.33%" class="w3-bar-item w3-button w3-mobile w3-deep-purple">Home</a>
+                    <a href="#" style="width:33.33%" class="w3-bar-item w3-button w3-mobile">About</a>
+                    <a href="#" style="width:33.33%" class="w3-bar-item w3-button w3-mobile">Social Profile</a>
+                </div>
+                    <div class="title_bg">
+                        <h1><div class="tracking-in-expand">H o m e p a g e</div><h1>
+                    </div>
+                <div class="w3-container">
+                </div>
+            </div>
+        </body>
 </html>
