@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        main
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+    <style>
+        .title_bg {
+            width: auto;
+            height: 400px;
+            padding: 10px;
+            background-color: LightGray;
+            margin: 0;
+            position: relative;
+        }
+
+        .tracking-in-expand {
+            -webkit-animation: tracking-in-expand 5s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+            font-family: "Audiowide", monospace;
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            text-align: center;
+        }
+
+        @keyframes tracking-in-expand {
+            0% {
+                letter-spacing: -0.5em;
+                opacity: 0;
+            }
+
+            40% {
+                opacity: 0.6;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+        <body>
+            <div class="w3-top">
+                <div class="w3-bar w3-border w3-light-gr3ey w3-center">
+                    <div style="width:33.33%" class="w3-bar-item w3-mobile w3-round-large w3-deep-purple">Home</div>
+                    <a href="#" style="width:33.33%" class="w3-bar-item w3-button w3-mobile w3-round-large">About</a>
+                    <a href="#" style="width:33.33%" class="w3-bar-item w3-button w3-mobile w3-round-large">Social Profile</a>
+                </div>
+
+                    <div class="title_bg">
+                        <h1 class="tracking-in-expand">Homespace</h1>
+                    </div>
+                <div class="w3-container">
+                </div>
+            </div>
+        </body>
+</html>
