@@ -6,7 +6,44 @@
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
     <style>
+        .title_bg {
+            width: auto;
+            height: 400px;
+            margin-top: 40px;
+            margin-left: 0px;
+            margin-right: 0px;
+            position: relative;
+            background-image: url('https://github.com/cutiesquirrel/cutiesquirrel.github.io/raw/main/src/bg/bg_1.png');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        .tracking-in-expand {
+            -webkit-animation: tracking-in-expand 5s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+            font-family: "Audiowide", monospace;
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            text-align: center;
+        }
+
+        @keyframes tracking-in-expand {
+            0% {
+                letter-spacing: -0.5em;
+                opacity: 0;
+            }
+
+            40% {
+                opacity: 0.6;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
 
     </style>
 </head>
@@ -17,8 +54,20 @@
                     <a href="about" style="width:33.33%" class="w3-bar-item w3-button w3-mobile w3-round-large">About</a>
                     <div style="width:33.33%" class="w3-bar-item w3-mobile w3-round-large w3-deep-purple">Social Profile</div>
                 </div>
-                <div class="w3-container">
-                </div>
+
+
             </div>
+
+            <div class="w3-container">
+                <div class="title_bg ">
+                    <h1 class="tracking-in-expand">Social Profile</h1>
+                </div>
+
+
+            </div>
+                
+
+              
+            
         </body>
 </html>
