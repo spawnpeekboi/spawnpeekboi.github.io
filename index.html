@@ -11,15 +11,35 @@
         .title_bg {
             width: auto;
             height: 400px;
-            padding: 10px;
-            background-color: LightGray;
-            margin: 0;
+            margin-top: 40px;
+            margin-left: 0px;
+            margin-right: 0px;
             position: relative;
+            background-image: url('https://github.com/cutiesquirrel/cutiesquirrel.github.io/raw/main/src/bg/bg_1.png');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .title_bg {
+                width: auto;
+                height: 400px;
+                margin-top: 100px;
+                margin-left: 0px;
+                margin-right: 0px;
+                position: relative;
+                background-image: url('https://github.com/cutiesquirrel/cutiesquirrel.github.io/raw/main/src/bg/bg_1.png');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+            }
         }
 
         .tracking-in-expand {
             -webkit-animation: tracking-in-expand 5s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
             font-family: "Audiowide", monospace;
+            color: white;
             position: absolute;
             top: 40%;
             width: 100%;
