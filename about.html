@@ -6,26 +6,178 @@
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="browser.css">
+    <link rel="stylesheet" href="scroll.css">
+    <link rel="stylesheet" media="screen" href="https://fontlibrary.org//face/minecraftia" type="text/css" />
     <style>
+        p.pixel-font {
+            font-family: 'MinecraftiaRegular';
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        p.font-large {
+            font-size: 200%;
+        }
+
+        p.font-mid {
+            font-size: 150%;
+        }
+
+        .skill-bar-container {
+            width: 100%;
+            background-color: #ddd;
+        }
+
+        .skill-bar {
+            text-align: right;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            color: white;
+        }
 
     </style>
 </head>
         <body>
+
             <div class="w3-top w3-white">
                 <div class="w3-bar w3-border w3-light-gr3ey w3-center">
                     <a href="https://cutiesquirrel.github.io" style="width:33.33%" class="w3-bar-item w3-button w3-mobile w3-round-large w3-white">Home</a>
                     <div style="width:33.33%" class="w3-bar-item w3-mobile w3-round-large w3-deep-purple">About</div>
                     <a href="social_profile" style="width:33.33%" class="w3-bar-item w3-button w3-mobile w3-round-large w3-white">Social Profile</a>
                 </div>
-
-                <div class="w3-row">
-                    <div class="w3-half w3-container">
-                        left
-                    </div>
-                    <div class="w3-half w3-container">
-                        right
-                    </div>
-                </div>
             </div>
+            
+<!--end of header-->
+            <br />
+                <div class="w3-row w3-margin-top ">
+                    <div class="w3-third w3-container">
+                        <!-- left -->
+                        <div class="browser_container browser_body">
+                            <div class="browser_row">
+                                <div class="browser_column browser_left">
+                                    <span class="dot" style="background:#ED594A;"></span>
+                                    <span class="dot" style="background:#FDD800;"></span>
+                                    <span class="dot" style="background:#5AC05A;"></span>
+                                </div>
+                                <div class="browser_column browser_middle">
+                                    <div class="browser_url">
+                                        image.jpg
+                                    </div>
+                                </div>
+                                <div class="browser_column browser_right">
+                                    <div style="float:right">
+                                        <span class="browser_bar"></span>
+                                        <span class="browser_bar"></span>
+                                        <span class="browser_bar"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="browser_content">
+                                <img src="https://cutiesquirrel.github.io/src/about/portrait.jpg" class="portrait w3-image">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w3-twothird w3-container">
+                        <!-- right -->
+                        <div class="browser_container browser_body">
+                            <div class="browser_row">
+                                <div class="browser_column browser_left">
+                                    <span class="dot" style="background:#ED594A;"></span>
+                                    <span class="dot" style="background:#FDD800;"></span>
+                                    <span class="dot" style="background:#5AC05A;"></span>
+                                </div>
+                                <div class="browser_column browser_middle">
+                                    <div class="browser_url">
+                                        statistics.xls
+                                    </div>
+                                </div>
+                                <div class="browser_column browser_right">
+                                    <div style="float:right">
+                                        <span class="browser_bar"></span>
+                                        <span class="browser_bar"></span>
+                                        <span class="browser_bar"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="browser_content">   
+
+                                    <p class="pixel-font font-large">
+                                        Personl Statistics
+                                    </p>
+
+                                <div class="w3-cell-row">
+                                    <div class="w3-cell w3-container">
+
+
+                                        <p class="pixel-font font-mid">
+                                            Health: not yet critical
+                                        </p>
+
+                                        <div class="skill-bar-container">
+                                            <div class="skill-bar w3-green" style="width:60%"><p class="pixel-font">60%</p></div>
+                                        </div>
+
+                                        <p class="pixel-font font-mid">
+                                            SIMP: absolutely &nbsp;&nbsp;&nbsp;&nbsp;
+                                        </p>
+                                        <div class="skill-bar-container">
+                                            <div class="skill-bar w3-pink" style="width:100%"><p class="pixel-font">100%</p></div>
+                                        </div>
+
+                                        <p class="pixel-font font-mid">
+                                            Stamina: can't even run
+                                        </p>
+                                        <div class="skill-bar-container">
+                                            <div class="skill-bar w3-blue" style="width:20%"><p class="pixel-font">20%</p></div>
+                                        </div>
+
+                                        <p class="pixel-font font-mid">
+                                            IT skills: nearly none
+                                        </p>
+                                        <div class="skill-bar-container">
+                                            <div class="skill-bar w3-black" style="width:1%"><p class="pixel-font">1%</p></div>
+                                        </div>
+                                    </div><!--end of left half-->
+                                
+
+                                    <div class="w3-cell w3-container">
+
+                                        <p class="pixel-font font-mid">
+                                            Wealth: broke &nbsp;&nbsp;&nbsp;&nbsp;
+                                        </p>
+                                        <div class="skill-bar-container">
+                                            <div class="skill-bar w3-deep-orange" style="width:10%"><p class="pixel-font">10%</p></div>
+                                        </div>
+
+                                        <p class="pixel-font font-mid">
+                                            Mental State: temporary stable
+                                        </p>
+                                        <div class="skill-bar-container">
+                                            <div class="skill-bar w3-yellow" style="width:50%"><p class="pixel-font">50%</p></div>
+                                        </div>
+
+                                        <p class="pixel-font font-mid">
+                                            Gamer: don't even have life
+                                        </p>
+                                        <div class="skill-bar-container">
+                                            <div class="skill-bar w3-lime" style="width:90%"><p class="pixel-font">90%</p></div>
+                                        </div>
+
+                                        <p class="pixel-font font-mid">
+                                            Intelligence Level: doltish
+                                        </p>
+                                        <div class="skill-bar-container">
+                                            <div class="skill-bar w3-amber" style="width:30%"><p class="pixel-font">30%</p></div>
+                                        </div>
+                                    </div><!--end of right half-->
+                                </div><!--end of cell row-->
+                            </div>
+                        </div><!--end of browser right-->
+                    </div><!--end of 2-3-->
+                </div>
         </body>
 </html>
