@@ -24,6 +24,10 @@
             font-size: 150%;
         }
 
+        p.font-mid-mobile {
+            font-size: 150%;
+        }
+
         .skill-bar-container {
             width: 100%;
             background-color: #ddd;
@@ -40,9 +44,17 @@
             margin-top: 40px;
         }
 
+        .pink {
+            background-color: #FF69B4;
+        }
+
         @media only screen and (max-width: 600px) {
             .margin-top {
                 margin-top: 100px;
+            }
+
+            p.font-mid-mobile {
+                font-size: 100%;
             }
         }
     </style>
@@ -84,7 +96,10 @@
                             </div>
 
                             <div class="browser_content">
-                                <img src="https://cutiesquirrel.github.io/src/about/portrait.jpg" class="portrait w3-image">
+                                <picture>
+                                    <source media="(min-width:601px)" srcset="https://cutiesquirrel.github.io/src/about/portrait.png">
+                                    <img src="https://cutiesquirrel.github.io/src/about/portrait_mobile.png" class="w3-image" style="width:auto;">
+                                </picture>                               
                             </div>
                         </div>
                     </div>
@@ -116,11 +131,12 @@
                                 <p class="pixel-font font-large">
                                     About Me
                                 </p>
-                                <p class="pixel-font font-mid">
+                                <p class="pixel-font font-mid-mobile">
                                     Nursing Student<br />
-                                    Average copper R6 enjoyer, trash-like LOL player<br />
-                                    Ordinatory people that knows nothing in IT<br />
-                                    Especially knows nothing on Python, HTML and CSS<br />
+                                    Average copper R6 enjoyer<br />
+                                    trash-like LOL player<br />
+                                    Ordinatory person that knows nothing in IT<br />
+                                    Especially knows nothing in Python, HTML and CSS<br />
 
                                 </p>
 
@@ -200,13 +216,13 @@
                                 <div class="w3-cell-row">
                                     <div class="w3-cell w3-container" style="width:50%">
                                         <div class="skill-bar-container">
-                                            <div class="skill-bar w3-pink" style="width:100%"><p class="pixel-font">100%</p></div>
+                                            <div class="skill-bar pink" style="width:100%"><p class="pixel-font">100%</p></div>
                                         </div>
                                     </div>
 
                                     <div class="w3-cell w3-container" style="width:50%">
                                         <div class="skill-bar-container">
-                                            <div class="skill-bar w3-orange" style="width:30%"><p class="pixel-font">30%</p></div>
+                                            <div class="skill-bar w3-orange" style="width:25%"><p class="pixel-font">25%</p></div>
                                         </div>
                                     </div>
                                 </div>
