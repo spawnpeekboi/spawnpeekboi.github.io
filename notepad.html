@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Notepad</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace; /* Monospace font for IDE feel */
+            margin: 0;
+            padding: 0;
+            background-color: #1e1e1e; /* Dark background */
+            color: #dcdcdc; /* Light text color */
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Full viewport height */
+        }
+        h1 {
+            margin: 20px; /* Space around heading */
+            text-align: center; /* Center heading */
+        }
+        .textarea-container {
+            flex-grow: 1; /* Allow this container to grow */
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+        }
+        textarea {
+            width: 100%;
+            max-width: 800px; /* Limit width for larger screens */
+            height: 90%; /* Adjust height as needed */
+            font-size: 16px;
+            background-color: #2e2e2e; /* Darker textarea background */
+            color: #ffffff; /* White text for textarea */
+            border: 1px solid #444; /* Subtle border */
+            padding: 10px; /* Padding for better text placement */
+            border-radius: 5px; /* Rounded corners */
+            resize: none; /* Disable resizing */
+        }
+        .button-container {
+            height: 10%; /* Occupy last 10% of the screen height */
+            display: flex;
+            justify-content: center; /* Center buttons horizontally */
+            align-items: center; /* Center buttons vertically */
+            background-color: #1e1e1e; /* Set background color to match overall theme */
+        }
+        button {
+            background-color: #007acc; /* Button background color */
+            color: white; /* Button text color */
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px; /* Font size for buttons */
+        }
+        button:hover {
+            background-color: #005a9e; /* Darker button on hover */
+        }
+        .button-container button {
+            margin-left: 10px; /* Space between buttons */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Simple Notepad</h1>
+<div class="textarea-container">
+    <textarea id="notepad" placeholder="Type your notes here..."></textarea>
+</div>
+<div class="button-container">
+    <button onclick="saveNotes()">Save Notes</button>
+    <button onclick="clearNotes()">Clear Notes</button>
+</div>
+
+<script>
+    // Function to save notes to local storage
+    function saveNotes() {
+        const notes = document.getElementById('notepad').value;
+        localStorage.setItem('userNotes', notes);
+        alert('Notes saved!');
+    }
+
+    // Function to load notes from local storage
+    function loadNotes() {
+        const savedNotes = localStorage.getItem('userNotes');
+        if (savedNotes) {
+            document.getElementById('notepad').value = savedNotes;
+        }
+    }
+
+    // Function to clear notes from local storage and textarea
+    function clearNotes() {
+        localStorage.removeItem('userNotes');
+        document.getElementById('notepad').value = '';
+        alert('Notes cleared!');
+    }
+
+    // Load notes when the page is loaded
+    window.onload = loadNotes;
+</script>
+
+</body>
+</html>
