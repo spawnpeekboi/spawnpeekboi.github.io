@@ -8,3 +8,11 @@ body {
 body::-webkit-scrollbar {
         display: none;
 }
+
+.dark-light-grey {
+	background-color: #2e2e2e;
+}
+
+.dark-grey {
+	background-color: #1e1e1e;
+}
