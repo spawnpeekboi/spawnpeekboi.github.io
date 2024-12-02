@@ -32,7 +32,7 @@ img.portrait {
 }
 
 .browser_left {
-    width: 15%;
+    width: 10%;
 }
 
 .browser_right {
@@ -40,7 +40,7 @@ img.portrait {
 }
 
 .browser_middle {
-    width: 75%;
+    width: 80%;
 }
 
 .browser_row:after {
