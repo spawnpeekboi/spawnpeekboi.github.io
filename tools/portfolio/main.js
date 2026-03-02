@@ -3,7 +3,7 @@
 // ============================================================================
 
 // Replace with your Finnhub API key from https://finnhub.io/register
-let FINNHUB_API_KEY = "YOUR_FINNHUB_API_KEY";
+let FINNHUB_API_KEY = null;
 
 const CHART_COLORS = [
   "#3794ff", "#d7ba7d", "#4ec9b0", "#ce9178", "#c586c0", "#b5cea8",
@@ -19,6 +19,16 @@ const CHART_COLORS = [
  */
 function formatUSD(amount) {
   return '$' + Number(amount).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+/**
+ * Format number as HKD currency
+ */
+function formatHKD(amount) {
+  return 'HK$' + Number(amount).toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
@@ -79,7 +89,7 @@ async function fetchHoldings() {
   } catch (error) {
     console.error('Error loading holdings:', error);
     showError('Failed to load holdings.json: ' + error.message);
-    return { stocks: [], cash: 0 };
+    return { stocks: [], cash: {} };
   }
 }
 
@@ -146,16 +156,28 @@ function enrichStocks(stocks, quotes) {
 }
 
 /**
- * Create cash holding object
+ * Create combined cash holding object
+ * Combines USD and HKD into a single entry for pie chart
  */
-function createCashHolding(cashAmount) {
+function createCombinedCashHolding(cashObj) {
+  const usd = cashObj.USD || 0;
+  const hkd = cashObj.HKD || 0;
+  
+  // For pie chart, we only show the total value (in USD equivalent)
+  // In the list, we'll show the breakdown separately
+  const totalValue = usd + hkd; // Simple sum, you can add conversion if needed
+  
   return {
     symbol: 'CASH',
     shares: 1,
-    price: cashAmount,
-    positionValue: cashAmount,
+    price: totalValue,
+    positionValue: totalValue,
     error: false,
-    type: 'cash'
+    type: 'cash',
+    breakdown: {
+      USD: usd,
+      HKD: hkd
+    }
   };
 }
 
@@ -293,17 +315,43 @@ function renderStockList(portfolio) {
     stockList.appendChild(li);
   });
   
-  // Render cash
-  if (cash) {
-    const li = document.createElement('li');
-    li.className = 'cash-row';
-    li.innerHTML = `
+  // Render combined cash with breakdown
+  if (cash && (cash.breakdown.USD > 0 || cash.breakdown.HKD > 0)) {
+    const mainCashLi = document.createElement('li');
+    mainCashLi.className = 'cash-row';
+    mainCashLi.innerHTML = `
       <span class="stock-symbol cash">💵 CASH</span>
       <span class="stock-price cash">-</span>
       <span class="stock-shares">-</span>
-      <span class="stock-posvalue cash">${formatUSD(cash.positionValue)}</span>
+      <span class="stock-posvalue cash">${formatUSD(cash.breakdown.USD + cash.breakdown.HKD)}</span>
     `;
-    stockList.appendChild(li);
+    stockList.appendChild(mainCashLi);
+    
+    // Add USD breakdown
+    if (cash.breakdown.USD > 0) {
+      const usdLi = document.createElement('li');
+      usdLi.className = 'cash-sub-row';
+      usdLi.innerHTML = `
+        <span class="stock-symbol cash-usd">├─ USD</span>
+        <span class="stock-price cash-sub">-</span>
+        <span class="stock-shares">-</span>
+        <span class="stock-posvalue cash-sub">${formatUSD(cash.breakdown.USD)}</span>
+      `;
+      stockList.appendChild(usdLi);
+    }
+    
+    // Add HKD breakdown
+    if (cash.breakdown.HKD > 0) {
+      const hkdLi = document.createElement('li');
+      hkdLi.className = 'cash-sub-row';
+      hkdLi.innerHTML = `
+        <span class="stock-symbol cash-hkd">└─ HKD</span>
+        <span class="stock-price cash-sub">-</span>
+        <span class="stock-shares">-</span>
+        <span class="stock-posvalue cash-sub">${formatHKD(cash.breakdown.HKD)}</span>
+      `;
+      stockList.appendChild(hkdLi);
+    }
   }
 }
 
@@ -330,16 +378,18 @@ async function renderPortfolio() {
     // Load holdings
     const data = await fetchHoldings();
     const stocks = data.stocks || [];
-    const cash = data.cash || 0;
+    const cashObj = data.cash || {};
     
     if (!stocks || stocks.length === 0) {
-      if (cash === 0) {
+      if (!cashObj.USD && !cashObj.HKD) {
         showError('No stocks or cash found in holdings.json');
         return;
       }
     }
     
-    console.log(`📦 Loaded ${stocks.length} stocks and ${formatUSD(cash)} cash`);
+    const usdAmount = cashObj.USD || 0;
+    const hkdAmount = cashObj.HKD || 0;
+    console.log(`📦 Loaded ${stocks.length} stocks, ${formatUSD(usdAmount)} USD cash, ${formatHKD(hkdAmount)} HKD cash`);
     
     // Fetch quotes only for stocks
     let quotes = [];
@@ -351,10 +401,11 @@ async function renderPortfolio() {
     // Enrich and calculate
     const enrichedStocks = enrichStocks(stocks, quotes);
     
-    // Add cash to portfolio
+    // Add combined cash to portfolio
     const portfolio = [...enrichedStocks];
-    if (cash > 0) {
-      portfolio.push(createCashHolding(cash));
+    const combinedCash = createCombinedCashHolding(cashObj);
+    if (combinedCash.positionValue > 0) {
+      portfolio.push(combinedCash);
     }
     
     const { holdings, totalValue } = calculatePercentages(portfolio);
