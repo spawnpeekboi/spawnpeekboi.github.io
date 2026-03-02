@@ -1,0 +1,344 @@
+:root {
+  --bg: #1e1e1e;
+  --panel: #23272e;
+  --border: #353535;
+  --accent: #3794ff;
+  --text: #d4d4d4;
+  --muted: #acacac;
+  --success: #4ec9b0;
+  --error: #f48771;
+  --warning: #ce9178;
+  --font: 'Fira Mono', 'Courier New', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+header, footer {
+  text-align: center;
+  background: var(--panel);
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+  margin: 0 0 0.5rem 0;
+  color: var(--accent);
+  font-size: 1.8em;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+header p {
+  color: var(--muted);
+  font-size: 0.9em;
+}
+
+main {
+  padding: 1.5rem 1rem;
+  display: flex;
+  justify-content: center;
+  min-height: calc(100vh - 180px);
+}
+
+#portfolio-panel {
+  max-width: 500px;
+  width: 100%;
+}
+
+/* Setup Panel */
+.setup-panel {
+  background: var(--panel);
+  border-radius: 8px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.setup-panel h2 {
+  color: var(--accent);
+  font-size: 1.3em;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+
+.setup-panel p {
+  margin: 0.8rem 0;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.setup-panel a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+}
+
+.setup-panel a:hover {
+  color: var(--success);
+  border-bottom-color: var(--success);
+}
+
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.code-block code {
+  color: var(--success);
+  font-weight: bold;
+  word-break: break-all;
+  font-size: 0.9em;
+}
+
+.status-message {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border-radius: 4px;
+  font-size: 0.95em;
+}
+
+.status-message.success {
+  background: rgba(78, 201, 176, 0.1);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.status-message.error {
+  background: rgba(244, 135, 113, 0.1);
+  color: var(--error);
+  border: 1px solid var(--error);
+}
+
+.status-message.loading {
+  background: rgba(55, 148, 255, 0.1);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+/* Chart Container */
+#chart-container {
+  background: var(--panel);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  padding: 1.5em;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+}
+
+canvas#portfolioChart {
+  width: 100% !important;
+  max-width: 320px !important;
+  height: auto !important;
+}
+
+/* Holdings List Container */
+#holdings-list-container {
+  background: var(--panel);
+  border-radius: 8px;
+  padding: 1.5em;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+#holdings-list-container h2 {
+  color: var(--accent);
+  font-size: 1.1em;
+  margin-bottom: 1em;
+  letter-spacing: 1px;
+}
+
+#stock-list {
+  list-style: none;
+}
+
+#stock-list li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.8em 0;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+#stock-list li:last-child {
+  border-bottom: none;
+}
+
+#stock-list li:hover {
+  background: rgba(55, 148, 255, 0.05);
+  padding: 0.8em 0.5em;
+}
+
+.stock-symbol {
+  color: var(--accent);
+  font-weight: bold;
+  font-size: 1.05em;
+  letter-spacing: 2px;
+}
+
+.stock-shares {
+  color: var(--muted);
+  font-size: 0.9em;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.stock-percent {
+  color: var(--success);
+  font-weight: bold;
+  font-size: 1.2em;
+  text-align: right;
+}
+
+/* Error Message */
+.error {
+  background: rgba(244, 135, 113, 0.1);
+  border: 1px solid var(--error);
+  color: var(--error);
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 0.95em;
+}
+
+footer {
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+  header {
+    padding: 1rem;
+  }
+
+  header h1 {
+    font-size: 1.4em;
+  }
+
+  main {
+    padding: 1rem;
+    min-height: auto;
+  }
+
+  #portfolio-panel {
+    max-width: 100%;
+  }
+
+  .setup-panel {
+    padding: 1.5rem;
+  }
+
+  .setup-panel h2 {
+    font-size: 1.1em;
+  }
+
+  .setup-panel p {
+    font-size: 0.9em;
+  }
+
+  .code-block code {
+    font-size: 0.8em;
+  }
+
+  #chart-container {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  canvas#portfolioChart {
+    max-width: 280px !important;
+  }
+
+  #holdings-list-container {
+    padding: 1rem;
+  }
+
+  #stock-list li {
+    padding: 0.7em 0;
+    grid-template-columns: 1fr 60px;
+    gap: 0.5rem;
+  }
+
+  #stock-list li:hover {
+    padding: 0.7em 0.3em;
+  }
+
+  .stock-percent {
+    font-size: 1.1em;
+  }
+}
+
+@media (max-width: 400px) {
+  header h1 {
+    font-size: 1.2em;
+  }
+
+  main {
+    padding: 0.75rem;
+  }
+
+  .setup-panel {
+    padding: 1rem;
+  }
+
+  #chart-container, #holdings-list-container {
+    padding: 0.75rem;
+    border-radius: 6px;
+  }
+
+  canvas#portfolioChart {
+    max-width: 250px !important;
+  }
+
+  #stock-list li {
+    padding: 0.6em 0;
+    gap: 0.3rem;
+  }
+
+  .stock-symbol {
+    font-size: 1em;
+  }
+
+  .stock-shares {
+    font-size: 0.85em;
+  }
+}

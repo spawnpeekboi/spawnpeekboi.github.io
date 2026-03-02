@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>US Stock Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>📈 US Stock Portfolio</h1>
+    <p id="last-updated">Loading...</p>
+  </header>
+  <main>
+    <section id="portfolio-panel">
+      <div id="setup-panel" class="setup-panel">
+        <h2>⚙️ Setup Required</h2>
+        <p>Please add your Finnhub API key to the URL:</p>
+        <div class="code-block">
+          <code id="setup-url">index.html?api_key=YOUR_API_KEY</code>
+        </div>
+        <p>Get your free API key at: <a href="https://finnhub.io/register" target="_blank">finnhub.io/register</a></p>
+        <p id="api-status" class="status-message"></p>
+      </div>
+
+      <div id="chart-container" style="display:none;">
+        <canvas id="portfolioChart"></canvas>
+      </div>
+      
+      <div id="holdings-list-container" style="display:none;">
+        <h2>Holdings</h2>
+        <div id="error-message" class="error" style="display:none;"></div>
+        <ul id="stock-list"></ul>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <small>Powered by Finnhub.io | Mobile Friendly | Dark IDE Theme</small>
+  </footer>
+  <script src="main.js"></script>
+</body>
+</html>
