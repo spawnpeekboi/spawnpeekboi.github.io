@@ -3,7 +3,7 @@
 // ============================================================================
 
 // Replace with your Finnhub API key from https://finnhub.io/register
-let FINNHUB_API_KEY = "YOUR_FINNHUB_API_KEY";
+let FINNHUB_API_KEY = null;
 
 const CHART_COLORS = [
   "#3794ff", "#d7ba7d", "#4ec9b0", "#ce9178", "#c586c0", "#b5cea8",
