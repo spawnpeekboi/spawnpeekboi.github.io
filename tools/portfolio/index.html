@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>US Stock Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>📈 US Stock Portfolio</h1>
+    <p id="last-updated">Loading...</p>
+  </header>
+
+  <main>
+    <section id="portfolio-summary">
+      <canvas id="portfolioChart"></canvas>
+      <ul id="stock-list"></ul>
+      <div class="total-row" id="total-value"></div>
+    </section>
+    <div id="error-message" class="error" style="display:none;"></div>
+  </main>
+
+  <footer>
+    <small>Powered by Finnhub.io | Mobile Friendly | IDE Dark Theme</small>
+  </footer>
+</body>
+</html>
