@@ -5,7 +5,11 @@
   --accent: #3794ff;
   --text: #d4d4d4;
   --muted: #acacac;
-  --font: 'Fira Mono','Courier New',monospace;
+  --success: #4ec9b0;
+  --warning: #d7ba7d;
+  --error: #ce9178;
+  --cash: #b5cea8;
+  --font: 'Courier New', 'Fira Mono', monospace;
 }
 
 * {
@@ -24,73 +28,92 @@ body {
 
 header, footer {
   background: var(--panel);
+  padding: 1.5rem 1rem;
   text-align: center;
   border-bottom: 1px solid var(--border);
 }
 
-header {
-  padding: 1.5em 1em;
-}
-
 header h1 {
+  margin: 0 0 0.5rem 0;
   color: var(--accent);
   font-size: 1.8em;
-  margin: 0 0 0.5em 0;
-  font-weight: 600;
   letter-spacing: 2px;
+  font-weight: 600;
 }
 
 header p {
   color: var(--muted);
-  font-size: 0.9em;
+  font-size: 0.85em;
   margin: 0;
 }
 
-footer {
-  padding: 1em;
-  color: var(--muted);
-  font-size: 0.85em;
-}
-
 main {
-  padding: 1.5em 1em;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: calc(100vh - 200px);
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem;
 }
 
-#portfolio-summary {
+/* Chart Container */
+#chart-container {
   background: var(--panel);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  padding: 1.5em;
-  max-width: 500px;
-  width: 100%;
   border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
 }
 
-canvas#portfolioChart {
-  width: 100% !important;
-  max-width: 350px !important;
-  height: auto !important;
-  display: block;
-  margin: 1em auto;
+#portfolioChart {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Positions Container */
+#positions-container {
+  background: var(--panel);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+#positions-container h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.2em;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.header-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1.2fr;
+  gap: 0.5rem;
+  padding: 0.8rem 0;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  font-size: 0.9em;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 #stock-list {
   list-style: none;
-  margin: 1.5em 0;
 }
 
 #stock-list li {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1.2fr;
-  gap: 0.5em;
+  gap: 0.5rem;
   align-items: center;
+  padding: 1rem 0;
   border-bottom: 1px solid var(--border);
-  padding: 0.75em 0;
-  font-size: 0.95em;
+  font-size: 1em;
+  transition: background 0.2s;
 }
 
 #stock-list li:last-child {
@@ -99,91 +122,172 @@ canvas#portfolioChart {
 
 #stock-list li:hover {
   background: rgba(55, 148, 255, 0.05);
-  padding: 0.75em 0.5em;
+  padding: 1rem 0.5rem;
   border-radius: 4px;
+}
+
+#stock-list li.cash-row {
+  background: rgba(181, 206, 168, 0.08);
+  font-weight: bold;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+#stock-list li.cash-row:hover {
+  background: rgba(181, 206, 168, 0.12);
 }
 
 .stock-symbol {
   color: var(--accent);
   font-weight: bold;
-  letter-spacing: 1px;
+  font-size: 1.05em;
+  letter-spacing: 2px;
+}
+
+.stock-symbol.cash {
+  color: var(--cash);
 }
 
 .stock-price {
-  color: #d7ba7d;
-  text-align: center;
+  color: var(--warning);
   font-weight: 600;
+  text-align: center;
+}
+
+.stock-price.cash {
+  color: var(--success);
+  text-align: center;
 }
 
 .stock-shares {
   color: var(--muted);
   text-align: center;
-  font-size: 0.9em;
 }
 
-.stock-value {
-  color: #4ec9b0;
+.stock-posvalue {
+  color: var(--success);
   font-weight: bold;
   text-align: right;
 }
 
-.total-row {
-  text-align: right;
-  font-weight: bold;
-  color: var(--accent);
-  font-size: 1.15em;
-  margin-top: 1em;
-  padding-top: 1em;
+.stock-posvalue.cash {
+  color: var(--cash);
+}
+
+/* Portfolio Total */
+#portfolio-total {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
   border-top: 2px solid var(--border);
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: right;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Error Container */
+#error-container {
+  background: var(--panel);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .error {
-  background: rgba(200, 87, 87, 0.1);
-  border: 1px solid #c85757;
-  color: #ffb0b0;
+  background: rgba(206, 152, 120, 0.1);
+  border: 1px solid var(--error);
+  color: var(--error);
+  padding: 1rem;
   border-radius: 4px;
-  padding: 1em;
-  margin: 1em 0;
-  width: 100%;
-  max-width: 500px;
   font-size: 0.95em;
 }
 
-/* Mobile responsive */
-@media (max-width: 600px) {
+footer {
+  color: var(--muted);
+  font-size: 0.8em;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  main {
+    padding: 1rem;
+  }
+
   header h1 {
     font-size: 1.4em;
   }
 
-  main {
-    padding: 1em 0.5em;
-  }
-
-  #portfolio-summary {
-    padding: 1em;
-    max-width: 100vw;
-  }
-
-  canvas#portfolioChart {
-    max-width: 90vw !important;
+  .header-row {
+    font-size: 0.8em;
   }
 
   #stock-list li {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.3em;
+    padding: 0.8rem 0;
   }
 
+  #positions-container {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.2em;
+  }
+
+  main {
+    padding: 0.75rem;
+  }
+
+  .header-row,
+  #stock-list li {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem;
+  }
+
+  .col-shares,
+  .col-value,
   .stock-shares,
-  .stock-value {
+  .stock-posvalue {
     display: none;
+  }
+
+  #stock-list li {
+    padding: 0.6rem 0;
+    border-left: 3px solid var(--accent);
+    padding-left: 0.5rem;
+  }
+
+  #stock-list li.cash-row {
+    border-left: 3px solid var(--cash);
+  }
+
+  #stock-list li:hover {
+    padding: 0.6rem 0.3rem;
+  }
+
+  .stock-symbol {
+    font-size: 1em;
   }
 
   .stock-price {
     text-align: left;
+    color: var(--warning);
+  }
+
+  .stock-price.cash {
+    color: var(--success);
+  }
+
+  #portfolio-total {
+    font-size: 1em;
   }
 }
 
-/* Scrollbar styling */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   background: var(--border);
@@ -195,5 +299,5 @@ canvas#portfolioChart {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4ec9b0;
+  background: var(--success);
 }
