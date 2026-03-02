@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>US Stock Portfolio</title>
   <link rel="stylesheet" href="styles.css">
-  <!-- Chart.js + Data Labels Plugin for percentage on pie slices -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="main.js" defer></script>
 </head>
 <body>
   <header>
@@ -16,31 +15,16 @@
   </header>
 
   <main>
-    <div id="chart-container" style="display:none;">
+    <section id="portfolio-summary">
       <canvas id="portfolioChart"></canvas>
-    </div>
-
-    <section id="positions-container" style="display:none;">
-      <h2>Positions</h2>
-      <div class="header-row">
-        <span class="col-symbol">Symbol</span>
-        <span class="col-price">Price</span>
-        <span class="col-shares">Shares</span>
-        <span class="col-value">Total Value</span>
-      </div>
       <ul id="stock-list"></ul>
-      <div id="portfolio-total"></div>
+      <div class="total-row" id="total-value"></div>
     </section>
-
-    <section id="error-container" style="display:none;">
-      <div id="error-message" class="error"></div>
-    </section>
+    <div id="error-message" class="error" style="display:none;"></div>
   </main>
 
   <footer>
-    <small>Powered by Finnhub.io | Mobile Friendly | Dark IDE Theme</small>
+    <small>Powered by Finnhub.io | Mobile Friendly | IDE Dark Theme</small>
   </footer>
-
-  <script src="main.js"></script>
 </body>
 </html>
