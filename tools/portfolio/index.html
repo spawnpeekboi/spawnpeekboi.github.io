@@ -16,13 +16,6 @@
   </header>
 
   <main>
-    <section id="api-setup" class="setup-panel">
-      <h2>⚙️ Setup Required</h2>
-      <p>Add your Finnhub API key to URL:</p>
-      <code>?api_key=YOUR_API_KEY</code>
-      <p>Get free key: <a href="https://finnhub.io/register" target="_blank">finnhub.io/register</a></p>
-    </section>
-
     <div id="chart-container" style="display:none;">
       <canvas id="portfolioChart"></canvas>
     </div>
@@ -37,6 +30,10 @@
       </div>
       <ul id="stock-list"></ul>
       <div id="portfolio-total"></div>
+    </section>
+
+    <section id="error-container" style="display:none;">
+      <div id="error-message" class="error"></div>
     </section>
   </main>
 
