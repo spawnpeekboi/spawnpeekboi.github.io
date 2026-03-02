@@ -1,8 +1,4 @@
 [
-  {"symbol": "AAPL", "shares": 10},
-  {"symbol": "MSFT", "shares": 5},
-  {"symbol": "TSLA", "shares": 2},
-  {"symbol": "AMZN", "shares": 3},
-  {"symbol": "GOOGL", "shares": 1},
-  {"symbol": "NVDA", "shares": 4}
+  {"symbol": "AAPL", "shares": 1},
+  {"symbol": "AMD", "shares": 0.5}
 ]
