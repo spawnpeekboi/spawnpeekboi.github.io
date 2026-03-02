@@ -1,5 +1,11 @@
-[
+{
+  "stocks": [
   {"symbol": "AAPL", "shares": 1},
   {"symbol": "AMD", "shares": 0.5},
   {"symbol": "GOVT", "shares": 20}
-]
+],
+  "cash": {
+    "USD": 107.68,
+    "HKD": 12725.37
+  }
+}
