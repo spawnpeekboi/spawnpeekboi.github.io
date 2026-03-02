@@ -2,13 +2,59 @@
 // Configuration
 // ============================================================================
 
-// Replace with your Finnhub API key from https://finnhub.io/register
 let FINNHUB_API_KEY = null;
 
 const CHART_COLORS = [
   "#3794ff", "#d7ba7d", "#4ec9b0", "#ce9178", "#c586c0", "#b5cea8",
   "#ff6b6b", "#ffd93d", "#6bcf7f", "#ff8b94"
 ];
+
+// ============================================================================
+// API Key Management
+// ============================================================================
+
+/**
+ * Get API key from URL parameters
+ */
+function getApiKeyFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const key = params.get('api_key');
+  console.log('API Key from URL:', key ? '✅ Found' : '❌ Not found');
+  return key;
+}
+
+/**
+ * Validate API key format
+ */
+function isValidApiKey(key) {
+  if (!key) return false;
+  // Finnhub API keys are typically alphanumeric
+  return /^[a-zA-Z0-9]{10,}$/.test(key);
+}
+
+/**
+ * Initialize API key on page load
+ */
+function initializeApiKey() {
+  const apiKey = getApiKeyFromUrl();
+  
+  if (!apiKey) {
+    showError('❌ No API key provided. Use: ?api_key=YOUR_FINNHUB_API_KEY');
+    console.error('API key missing from URL parameters');
+    return false;
+  }
+  
+  if (!isValidApiKey(apiKey)) {
+    showError('❌ Invalid API key format');
+    console.error('API key format invalid');
+    return false;
+  }
+  
+  FINNHUB_API_KEY = apiKey;
+  console.log('✅ API Key configured successfully');
+  hideError();
+  return true;
+}
 
 // ============================================================================
 // Utility Functions
@@ -38,15 +84,24 @@ function formatHKD(amount) {
  * Show error message
  */
 function showError(message) {
-  document.getElementById('error-container').style.display = 'block';
-  document.getElementById('error-message').textContent = '❌ ' + message;
+  const errorContainer = document.getElementById('error-container');
+  const errorMessage = document.getElementById('error-message');
+  
+  if (errorContainer && errorMessage) {
+    errorMessage.textContent = message;
+    errorContainer.style.display = 'block';
+  }
+  console.error(message);
 }
 
 /**
  * Hide error message
  */
 function hideError() {
-  document.getElementById('error-container').style.display = 'none';
+  const errorContainer = document.getElementById('error-container');
+  if (errorContainer) {
+    errorContainer.style.display = 'none';
+  }
 }
 
 /**
@@ -103,7 +158,7 @@ async function fetchHoldings() {
     };
   } catch (error) {
     console.error('Error loading holdings:', error);
-    showError('Failed to load holdings.json: ' + error.message);
+    showError('❌ Failed to load holdings.json: ' + error.message);
     return { stocks: [], cash: { USD: 0, HKD: 0 } };
   }
 }
@@ -112,8 +167,15 @@ async function fetchHoldings() {
  * Fetch stock price from Finnhub API
  */
 async function fetchStockQuote(symbol) {
+  if (!FINNHUB_API_KEY) {
+    console.error('API Key not set. Cannot fetch prices.');
+    return { symbol, price: 0, error: true };
+  }
+
   try {
     const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`;
+    console.log(`🔄 Fetching ${symbol}...`);
+    
     const res = await fetch(url);
     
     if (!res.ok) {
@@ -121,11 +183,18 @@ async function fetchStockQuote(symbol) {
     }
     
     const data = await res.json();
+    
+    if (!data.c && data.c !== 0) {
+      console.warn(`⚠️ No price data for ${symbol}`);
+      return { symbol, price: 0, error: true };
+    }
+    
     const price = data.c || 0;
+    console.log(`✅ ${symbol}: ${formatUSD(price)}`);
     
     return { symbol, price, error: false };
   } catch (error) {
-    console.warn(`Error fetching ${symbol}:`, error.message);
+    console.error(`❌ Error fetching ${symbol}:`, error.message);
     return { symbol, price: 0, error: true };
   }
 }
@@ -134,7 +203,14 @@ async function fetchStockQuote(symbol) {
  * Fetch all stock quotes with rate limiting
  */
 async function fetchAllQuotes(stocks) {
+  if (!FINNHUB_API_KEY) {
+    console.error('API Key not set. Cannot fetch any stock prices.');
+    return stocks.map(s => ({ symbol: s.symbol, price: 0, error: true }));
+  }
+
+  console.log('💰 Starting to fetch stock prices...');
   const quotes = [];
+  
   for (let i = 0; i < stocks.length; i++) {
     const quote = await fetchStockQuote(stocks[i].symbol);
     quotes.push(quote);
@@ -144,6 +220,8 @@ async function fetchAllQuotes(stocks) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
   }
+  
+  console.log('✅ All stock prices fetched');
   return quotes;
 }
 
@@ -403,7 +481,7 @@ async function renderPortfolio() {
     const hasCash = (Number(cashObj.USD) > 0 || Number(cashObj.HKD) > 0);
     
     if (!hasStocks && !hasCash) {
-      showError('No stocks or cash found in holdings.json. Please check the file format.');
+      showError('❌ No stocks or cash found in holdings.json. Please check the file format.');
       return;
     }
     
@@ -414,7 +492,7 @@ async function renderPortfolio() {
     // Fetch quotes only for stocks
     let quotes = [];
     if (stocks.length > 0) {
-      console.log('💰 Fetching prices...');
+      console.log('💰 Fetching prices from Finnhub API...');
       quotes = await fetchAllQuotes(stocks);
     }
     
@@ -443,7 +521,7 @@ async function renderPortfolio() {
     console.log('✅ Portfolio loaded successfully');
   } catch (error) {
     console.error('Error:', error);
-    showError('Error loading portfolio: ' + error.message);
+    showError('❌ Error loading portfolio: ' + error.message);
   }
 }
 
@@ -452,10 +530,21 @@ async function renderPortfolio() {
 // ============================================================================
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', renderPortfolio);
+  document.addEventListener('DOMContentLoaded', () => {
+    // Initialize API key first
+    if (initializeApiKey()) {
+      // Only render portfolio if API key is valid
+      renderPortfolio();
+      // Auto-refresh every 5 minutes
+      setInterval(renderPortfolio, 5 * 60 * 1000);
+    }
+  });
 } else {
-  renderPortfolio();
+  // Initialize API key first
+  if (initializeApiKey()) {
+    // Only render portfolio if API key is valid
+    renderPortfolio();
+    // Auto-refresh every 5 minutes
+    setInterval(renderPortfolio, 5 * 60 * 1000);
+  }
 }
-
-// Auto-refresh every 5 minutes
-setInterval(renderPortfolio, 5 * 60 * 1000);
