@@ -2,6 +2,7 @@
 // Configuration
 // ============================================================================
 
+// Replace with your Finnhub API key from https://finnhub.io/register
 let FINNHUB_API_KEY = null;
 
 const CHART_COLORS = [
@@ -24,37 +25,28 @@ function formatUSD(amount) {
 }
 
 /**
- * Get API key from URL parameters
+ * Format number as HKD currency
  */
-function getApiKeyFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('api_key');
+function formatHKD(amount) {
+  return 'HK$' + Number(amount).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
 /**
- * Check if API key is valid
+ * Show error message
  */
-function isValidApiKey(key) {
-  if (!key) return false;
-  return /^[a-zA-Z0-9]{10,}$/.test(key);
+function showError(message) {
+  document.getElementById('error-container').style.display = 'block';
+  document.getElementById('error-message').textContent = '❌ ' + message;
 }
 
 /**
- * Show setup panel
+ * Hide error message
  */
-function showSetupPanel() {
-  document.getElementById('api-setup').style.display = 'block';
-  document.getElementById('chart-container').style.display = 'none';
-  document.getElementById('positions-container').style.display = 'none';
-}
-
-/**
- * Hide setup panel and show portfolio
- */
-function hideSetupPanel() {
-  document.getElementById('api-setup').style.display = 'none';
-  document.getElementById('chart-container').style.display = 'flex';
-  document.getElementById('positions-container').style.display = 'block';
+function hideError() {
+  document.getElementById('error-container').style.display = 'none';
 }
 
 /**
@@ -88,14 +80,16 @@ async function fetchHoldings() {
     const res = await fetch('holdings.json');
     if (!res.ok) throw new Error('Failed to load holdings.json');
     const data = await res.json();
-    if (!Array.isArray(data) || data.length === 0) {
-      throw new Error('Holdings file is empty');
+    
+    if (!data.stocks && !data.cash) {
+      throw new Error('holdings.json must contain "stocks" and/or "cash" properties');
     }
+    
     return data;
   } catch (error) {
     console.error('Error loading holdings:', error);
-    alert('Error loading holdings.json: ' + error.message);
-    return [];
+    showError('Failed to load holdings.json: ' + error.message);
+    return { stocks: [], cash: {} };
   }
 }
 
@@ -124,14 +118,14 @@ async function fetchStockQuote(symbol) {
 /**
  * Fetch all stock quotes with rate limiting
  */
-async function fetchAllQuotes(holdings) {
+async function fetchAllQuotes(stocks) {
   const quotes = [];
-  for (let i = 0; i < holdings.length; i++) {
-    const quote = await fetchStockQuote(holdings[i].symbol);
+  for (let i = 0; i < stocks.length; i++) {
+    const quote = await fetchStockQuote(stocks[i].symbol);
     quotes.push(quote);
     
     // Rate limiting: 100ms delay between API calls
-    if (i < holdings.length - 1) {
+    if (i < stocks.length - 1) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
   }
@@ -143,31 +137,58 @@ async function fetchAllQuotes(holdings) {
 // ============================================================================
 
 /**
- * Merge holdings with prices and calculate position values
+ * Merge stocks with prices and calculate position values
  */
-function enrichHoldings(holdings, quotes) {
-  return holdings.map(holding => {
-    const quote = quotes.find(q => q.symbol === holding.symbol) || { price: 0, error: true };
-    const positionValue = quote.price * holding.shares;
+function enrichStocks(stocks, quotes) {
+  return stocks.map(stock => {
+    const quote = quotes.find(q => q.symbol === stock.symbol) || { price: 0, error: true };
+    const positionValue = quote.price * stock.shares;
     
     return {
-      symbol: holding.symbol,
-      shares: holding.shares,
+      symbol: stock.symbol,
+      shares: stock.shares,
       price: quote.price,
       positionValue: positionValue,
-      error: quote.error
+      error: quote.error,
+      type: 'stock'
     };
   });
 }
 
 /**
- * Calculate portfolio percentages
+ * Create combined cash holding object
+ * Combines USD and HKD into a single entry for pie chart
  */
-function calculatePercentages(enriched) {
-  const totalValue = enriched.reduce((sum, h) => sum + h.positionValue, 0);
+function createCombinedCashHolding(cashObj) {
+  const usd = cashObj.USD || 0;
+  const hkd = cashObj.HKD || 0;
+  
+  // For pie chart, we only show the total value (in USD equivalent)
+  // In the list, we'll show the breakdown separately
+  const totalValue = usd + hkd; // Simple sum, you can add conversion if needed
   
   return {
-    holdings: enriched.map(e => ({
+    symbol: 'CASH',
+    shares: 1,
+    price: totalValue,
+    positionValue: totalValue,
+    error: false,
+    type: 'cash',
+    breakdown: {
+      USD: usd,
+      HKD: hkd
+    }
+  };
+}
+
+/**
+ * Calculate portfolio percentages
+ */
+function calculatePercentages(portfolio) {
+  const totalValue = portfolio.reduce((sum, h) => sum + h.positionValue, 0);
+  
+  return {
+    holdings: portfolio.map(e => ({
       ...e,
       percent: totalValue > 0 ? (e.positionValue / totalValue) * 100 : 0
     })),
@@ -196,7 +217,12 @@ function renderPieChart(portfolio, totalValue) {
   const labels = portfolio.map(e => e.symbol);
   const values = portfolio.map(e => e.positionValue);
   const percents = portfolio.map(e => e.percent);
-  const colors = CHART_COLORS.slice(0, portfolio.length);
+  
+  // Use special color for CASH
+  const colors = portfolio.map((h, i) => {
+    if (h.symbol === 'CASH') return '#b5cea8';
+    return CHART_COLORS[i % CHART_COLORS.length];
+  });
   
   window.portfolioChart = new Chart(ctx, {
     type: 'doughnut',
@@ -273,7 +299,12 @@ function renderStockList(portfolio) {
   const stockList = document.getElementById('stock-list');
   stockList.innerHTML = '';
   
-  portfolio.forEach(holding => {
+  // Separate stocks and cash
+  const stocks = portfolio.filter(h => h.type === 'stock');
+  const cash = portfolio.find(h => h.type === 'cash');
+  
+  // Render stocks
+  stocks.forEach(holding => {
     const li = document.createElement('li');
     li.innerHTML = `
       <span class="stock-symbol">${holding.symbol}</span>
@@ -283,6 +314,45 @@ function renderStockList(portfolio) {
     `;
     stockList.appendChild(li);
   });
+  
+  // Render combined cash with breakdown
+  if (cash && (cash.breakdown.USD > 0 || cash.breakdown.HKD > 0)) {
+    const mainCashLi = document.createElement('li');
+    mainCashLi.className = 'cash-row';
+    mainCashLi.innerHTML = `
+      <span class="stock-symbol cash">💵 CASH</span>
+      <span class="stock-price cash">-</span>
+      <span class="stock-shares">-</span>
+      <span class="stock-posvalue cash">${formatUSD(cash.breakdown.USD + cash.breakdown.HKD)}</span>
+    `;
+    stockList.appendChild(mainCashLi);
+    
+    // Add USD breakdown
+    if (cash.breakdown.USD > 0) {
+      const usdLi = document.createElement('li');
+      usdLi.className = 'cash-sub-row';
+      usdLi.innerHTML = `
+        <span class="stock-symbol cash-usd">├─ USD</span>
+        <span class="stock-price cash-sub">-</span>
+        <span class="stock-shares">-</span>
+        <span class="stock-posvalue cash-sub">${formatUSD(cash.breakdown.USD)}</span>
+      `;
+      stockList.appendChild(usdLi);
+    }
+    
+    // Add HKD breakdown
+    if (cash.breakdown.HKD > 0) {
+      const hkdLi = document.createElement('li');
+      hkdLi.className = 'cash-sub-row';
+      hkdLi.innerHTML = `
+        <span class="stock-symbol cash-hkd">└─ HKD</span>
+        <span class="stock-price cash-sub">-</span>
+        <span class="stock-shares">-</span>
+        <span class="stock-posvalue cash-sub">${formatHKD(cash.breakdown.HKD)}</span>
+      `;
+      stockList.appendChild(hkdLi);
+    }
+  }
 }
 
 /**
@@ -302,57 +372,59 @@ function renderPortfolioTotal(totalValue) {
  */
 async function renderPortfolio() {
   try {
+    hideError();
     console.log('📊 Loading portfolio...');
     
     // Load holdings
-    const holdings = await fetchHoldings();
-    if (!holdings || holdings.length === 0) return;
+    const data = await fetchHoldings();
+    const stocks = data.stocks || [];
+    const cashObj = data.cash || {};
     
-    console.log(`📦 Loaded ${holdings.length} holdings`);
+    if (!stocks || stocks.length === 0) {
+      if (!cashObj.USD && !cashObj.HKD) {
+        showError('No stocks or cash found in holdings.json');
+        return;
+      }
+    }
     
-    // Fetch quotes
-    console.log('💰 Fetching prices...');
-    const quotes = await fetchAllQuotes(holdings);
+    const usdAmount = cashObj.USD || 0;
+    const hkdAmount = cashObj.HKD || 0;
+    console.log(`📦 Loaded ${stocks.length} stocks, ${formatUSD(usdAmount)} USD cash, ${formatHKD(hkdAmount)} HKD cash`);
+    
+    // Fetch quotes only for stocks
+    let quotes = [];
+    if (stocks.length > 0) {
+      console.log('💰 Fetching prices...');
+      quotes = await fetchAllQuotes(stocks);
+    }
     
     // Enrich and calculate
-    const enriched = enrichHoldings(holdings, quotes);
-    const { holdings: portfolio, totalValue } = calculatePercentages(enriched);
+    const enrichedStocks = enrichStocks(stocks, quotes);
+    
+    // Add combined cash to portfolio
+    const portfolio = [...enrichedStocks];
+    const combinedCash = createCombinedCashHolding(cashObj);
+    if (combinedCash.positionValue > 0) {
+      portfolio.push(combinedCash);
+    }
+    
+    const { holdings, totalValue } = calculatePercentages(portfolio);
+    
+    // Show portfolio containers
+    document.getElementById('chart-container').style.display = 'flex';
+    document.getElementById('positions-container').style.display = 'block';
     
     // Render
-    renderPieChart(portfolio, totalValue);
-    renderStockList(portfolio);
+    renderPieChart(holdings, totalValue);
+    renderStockList(holdings);
     renderPortfolioTotal(totalValue);
     updateTimestamp();
     
     console.log('✅ Portfolio loaded successfully');
   } catch (error) {
     console.error('Error:', error);
-    alert('Error loading portfolio: ' + error.message);
+    showError('Error loading portfolio: ' + error.message);
   }
-}
-
-/**
- * Initialize application
- */
-function initializeApp() {
-  const apiKey = getApiKeyFromUrl();
-  
-  if (!apiKey) {
-    console.warn('No API key provided');
-    showSetupPanel();
-    return;
-  }
-  
-  if (!isValidApiKey(apiKey)) {
-    console.warn('Invalid API key format');
-    showSetupPanel();
-    return;
-  }
-  
-  // API key is valid
-  FINNHUB_API_KEY = apiKey;
-  hideSetupPanel();
-  renderPortfolio();
 }
 
 // ============================================================================
@@ -360,14 +432,10 @@ function initializeApp() {
 // ============================================================================
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApp);
+  document.addEventListener('DOMContentLoaded', renderPortfolio);
 } else {
-  initializeApp();
+  renderPortfolio();
 }
 
-// Auto-refresh every 5 minutes (only if API key is set)
-setInterval(() => {
-  if (FINNHUB_API_KEY) {
-    renderPortfolio();
-  }
-}, 5 * 60 * 1000);
+// Auto-refresh every 5 minutes
+setInterval(renderPortfolio, 5 * 60 * 1000);
