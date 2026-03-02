@@ -8,7 +8,9 @@
   --success: #4ec9b0;
   --warning: #d7ba7d;
   --error: #ce9178;
-  --cash: #b5cea8;
+  --cash-usd: #b5cea8;
+  --cash-hkd: #9cdcfe;
+  --cash-combined: #b5cea8;
   --font: 'Courier New', 'Fira Mono', monospace;
 }
 
@@ -138,6 +140,19 @@ main {
   background: rgba(181, 206, 168, 0.12);
 }
 
+#stock-list li.cash-sub-row {
+  background: transparent;
+  padding: 0.5rem 0 0.5rem 1rem;
+  border-bottom: none;
+  font-size: 0.95em;
+  font-weight: normal;
+}
+
+#stock-list li.cash-sub-row:hover {
+  background: transparent;
+  padding: 0.5rem 0 0.5rem 1rem;
+}
+
 .stock-symbol {
   color: var(--accent);
   font-weight: bold;
@@ -146,7 +161,17 @@ main {
 }
 
 .stock-symbol.cash {
-  color: var(--cash);
+  color: var(--cash-combined);
+}
+
+.stock-symbol.cash-usd {
+  color: var(--cash-usd);
+  font-size: 0.9em;
+}
+
+.stock-symbol.cash-hkd {
+  color: var(--cash-hkd);
+  font-size: 0.9em;
 }
 
 .stock-price {
@@ -157,6 +182,11 @@ main {
 
 .stock-price.cash {
   color: var(--success);
+  text-align: center;
+}
+
+.stock-price.cash-sub {
+  color: var(--muted);
   text-align: center;
 }
 
@@ -172,7 +202,12 @@ main {
 }
 
 .stock-posvalue.cash {
-  color: var(--cash);
+  color: var(--cash-combined);
+}
+
+.stock-posvalue.cash-sub {
+  color: var(--muted);
+  text-align: right;
 }
 
 /* Portfolio Total */
@@ -262,7 +297,12 @@ footer {
   }
 
   #stock-list li.cash-row {
-    border-left: 3px solid var(--cash);
+    border-left: 3px solid var(--cash-combined);
+  }
+
+  #stock-list li.cash-sub-row {
+    border-left: none;
+    padding-left: 1.5rem;
   }
 
   #stock-list li:hover {
