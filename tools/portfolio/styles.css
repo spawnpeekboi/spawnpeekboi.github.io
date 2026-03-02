@@ -8,6 +8,9 @@
   --success: #4ec9b0;
   --warning: #d7ba7d;
   --error: #ce9178;
+  --cash-usd: #b5cea8;
+  --cash-hkd: #9cdcfe;
+  --cash-combined: #b5cea8;
   --font: 'Courier New', 'Fira Mono', monospace;
 }
 
@@ -50,51 +53,6 @@ main {
   max-width: 600px;
   margin: 0 auto;
   padding: 1.5rem;
-}
-
-/* Setup Panel */
-.setup-panel {
-  background: var(--panel);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  padding: 2rem;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  margin-bottom: 2rem;
-}
-
-.setup-panel h2 {
-  color: var(--accent);
-  margin-bottom: 1rem;
-  letter-spacing: 1px;
-}
-
-.setup-panel p {
-  margin: 0.8rem 0;
-  color: var(--text);
-}
-
-.setup-panel code {
-  display: block;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 0.8rem;
-  margin: 1rem 0;
-  color: var(--success);
-  font-weight: bold;
-  word-break: break-all;
-}
-
-.setup-panel a {
-  color: var(--accent);
-  text-decoration: none;
-  border-bottom: 1px solid var(--accent);
-}
-
-.setup-panel a:hover {
-  color: var(--success);
-  border-bottom-color: var(--success);
 }
 
 /* Chart Container */
@@ -170,6 +128,31 @@ main {
   border-radius: 4px;
 }
 
+#stock-list li.cash-row {
+  background: rgba(181, 206, 168, 0.08);
+  font-weight: bold;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+#stock-list li.cash-row:hover {
+  background: rgba(181, 206, 168, 0.12);
+}
+
+#stock-list li.cash-sub-row {
+  background: transparent;
+  padding: 0.5rem 0 0.5rem 1rem;
+  border-bottom: none;
+  font-size: 0.95em;
+  font-weight: normal;
+}
+
+#stock-list li.cash-sub-row:hover {
+  background: transparent;
+  padding: 0.5rem 0 0.5rem 1rem;
+}
+
 .stock-symbol {
   color: var(--accent);
   font-weight: bold;
@@ -177,9 +160,33 @@ main {
   letter-spacing: 2px;
 }
 
+.stock-symbol.cash {
+  color: var(--cash-combined);
+}
+
+.stock-symbol.cash-usd {
+  color: var(--cash-usd);
+  font-size: 0.9em;
+}
+
+.stock-symbol.cash-hkd {
+  color: var(--cash-hkd);
+  font-size: 0.9em;
+}
+
 .stock-price {
   color: var(--warning);
   font-weight: 600;
+  text-align: center;
+}
+
+.stock-price.cash {
+  color: var(--success);
+  text-align: center;
+}
+
+.stock-price.cash-sub {
+  color: var(--muted);
   text-align: center;
 }
 
@@ -194,6 +201,15 @@ main {
   text-align: right;
 }
 
+.stock-posvalue.cash {
+  color: var(--cash-combined);
+}
+
+.stock-posvalue.cash-sub {
+  color: var(--muted);
+  text-align: right;
+}
+
 /* Portfolio Total */
 #portfolio-total {
   margin-top: 1.5rem;
@@ -204,6 +220,24 @@ main {
   text-align: right;
   font-weight: bold;
   letter-spacing: 1px;
+}
+
+/* Error Container */
+#error-container {
+  background: var(--panel);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.error {
+  background: rgba(206, 152, 120, 0.1);
+  border: 1px solid var(--error);
+  color: var(--error);
+  padding: 1rem;
+  border-radius: 4px;
+  font-size: 0.95em;
 }
 
 footer {
@@ -243,10 +277,6 @@ footer {
     padding: 0.75rem;
   }
 
-  .setup-panel {
-    padding: 1.5rem;
-  }
-
   .header-row,
   #stock-list li {
     grid-template-columns: 1fr 1fr;
@@ -266,6 +296,15 @@ footer {
     padding-left: 0.5rem;
   }
 
+  #stock-list li.cash-row {
+    border-left: 3px solid var(--cash-combined);
+  }
+
+  #stock-list li.cash-sub-row {
+    border-left: none;
+    padding-left: 1.5rem;
+  }
+
   #stock-list li:hover {
     padding: 0.6rem 0.3rem;
   }
@@ -277,6 +316,10 @@ footer {
   .stock-price {
     text-align: left;
     color: var(--warning);
+  }
+
+  .stock-price.cash {
+    color: var(--success);
   }
 
   #portfolio-total {
