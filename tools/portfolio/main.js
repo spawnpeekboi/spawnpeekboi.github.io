@@ -3,7 +3,7 @@
 // ============================================================================
 
 // Replace with your Finnhub API key from https://finnhub.io/register
-let FINNHUB_API_KEY = null;
+let FINNHUB_API_KEY = "YOUR_FINNHUB_API_KEY";
 
 const CHART_COLORS = [
   "#3794ff", "#d7ba7d", "#4ec9b0", "#ce9178", "#c586c0", "#b5cea8",
@@ -78,18 +78,33 @@ function updateTimestamp() {
 async function fetchHoldings() {
   try {
     const res = await fetch('holdings.json');
-    if (!res.ok) throw new Error('Failed to load holdings.json');
-    const data = await res.json();
+    if (!res.ok) throw new Error('Failed to load holdings.json (404)');
     
-    if (!data.stocks && !data.cash) {
-      throw new Error('holdings.json must contain "stocks" and/or "cash" properties');
+    const data = await res.json();
+    console.log('Raw holdings data:', data);
+    
+    // Validate the new format: should have "stocks" and/or "cash"
+    if (!data || (typeof data !== 'object')) {
+      throw new Error('holdings.json must be a valid JSON object');
     }
     
-    return data;
+    // Check if it has the new format
+    const hasStocks = Array.isArray(data.stocks) && data.stocks.length > 0;
+    const hasCash = data.cash && (typeof data.cash === 'object') && 
+                    (data.cash.USD > 0 || data.cash.HKD > 0);
+    
+    if (!hasStocks && !hasCash) {
+      throw new Error('holdings.json must contain either "stocks" array or "cash" object with USD/HKD');
+    }
+    
+    return {
+      stocks: data.stocks || [],
+      cash: data.cash || { USD: 0, HKD: 0 }
+    };
   } catch (error) {
     console.error('Error loading holdings:', error);
     showError('Failed to load holdings.json: ' + error.message);
-    return { stocks: [], cash: {} };
+    return { stocks: [], cash: { USD: 0, HKD: 0 } };
   }
 }
 
@@ -160,11 +175,11 @@ function enrichStocks(stocks, quotes) {
  * Combines USD and HKD into a single entry for pie chart
  */
 function createCombinedCashHolding(cashObj) {
-  const usd = cashObj.USD || 0;
-  const hkd = cashObj.HKD || 0;
+  // Ensure we have valid numbers
+  const usd = Number(cashObj.USD) || 0;
+  const hkd = Number(cashObj.HKD) || 0;
   
   // For pie chart, we only show the total value (in USD equivalent)
-  // In the list, we'll show the breakdown separately
   const totalValue = usd + hkd; // Simple sum, you can add conversion if needed
   
   return {
@@ -378,17 +393,22 @@ async function renderPortfolio() {
     // Load holdings
     const data = await fetchHoldings();
     const stocks = data.stocks || [];
-    const cashObj = data.cash || {};
+    const cashObj = data.cash || { USD: 0, HKD: 0 };
     
-    if (!stocks || stocks.length === 0) {
-      if (!cashObj.USD && !cashObj.HKD) {
-        showError('No stocks or cash found in holdings.json');
-        return;
-      }
+    console.log('Stocks:', stocks);
+    console.log('Cash:', cashObj);
+    
+    // Check if we have any data
+    const hasStocks = Array.isArray(stocks) && stocks.length > 0;
+    const hasCash = (Number(cashObj.USD) > 0 || Number(cashObj.HKD) > 0);
+    
+    if (!hasStocks && !hasCash) {
+      showError('No stocks or cash found in holdings.json. Please check the file format.');
+      return;
     }
     
-    const usdAmount = cashObj.USD || 0;
-    const hkdAmount = cashObj.HKD || 0;
+    const usdAmount = Number(cashObj.USD) || 0;
+    const hkdAmount = Number(cashObj.HKD) || 0;
     console.log(`📦 Loaded ${stocks.length} stocks, ${formatUSD(usdAmount)} USD cash, ${formatHKD(hkdAmount)} HKD cash`);
     
     // Fetch quotes only for stocks
