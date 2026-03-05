@@ -7,6 +7,424 @@
 body {
   background-color: #0d1117;
   color: #c9d1d9;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 40px;
+  border-bottom: 2px solid #30363d;
+  padding-bottom: 20px;
+}
+
+h1 {
+  font-size: 2.2rem;
+  color: #58a6ff;
+  margin-bottom: 8px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  color: #8b949e;
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+/* Chart Container */
+.chart-container {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+canvas {
+  max-height: 350px;
+  width: 100% !important;
+}
+
+/* Holdings Table */
+.holdings-table {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #0d1117;
+  border-bottom: 2px solid #30363d;
+}
+
+th {
+  padding: 14px;
+  text-align: left;
+  color: #79c0ff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #21262d;
+}
+
+tbody tr:hover {
+  background-color: #0d1117;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.loading {
+  text-align: center;
+  color: #8b949e;
+  font-style: italic;
+}
+
+/* Symbol styling */
+td:first-child {
+  font-weight: 600;
+  color: #58a6ff;
+}
+
+/* Values styling */
+td:nth-child(2),
+td:nth-child(3),
+td:nth-child(4) {
+  text-align: right;
+  color: #c9d1d9;
+  font-weight: 500;
+}
+
+td:nth-child(5) {
+  text-align: right;
+  color: #79c0ff;
+  font-weight: 600;
+}
+
+/* === Class Headers with Pantone Colors === */
+
+/* Cash - Pantone 354C (Vivid Green) */
+.class-header-Cash {
+  background-color: #00a651;
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-left: 5px solid #7ee787;
+  padding: 14px 14px !important;
+  font-size: 1.05rem;
+}
+
+/* ETFs - Pantone 285C (Bright Blue) */
+.class-header-ETFs {
+  background-color: #1f77d4;
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-left: 5px solid #79c0ff;
+  padding: 14px 14px !important;
+  font-size: 1.05rem;
+}
+
+/* Playground - Pantone 137C (Vivid Orange) */
+.class-header-Playground {
+  background-color: #fb8500;
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-left: 5px solid #ffa198;
+  padding: 14px 14px !important;
+  font-size: 1.05rem;
+}
+
+/* U.S. Bond - Pantone 2587C (Vivid Purple) */
+.class-header-USBond {
+  background-color: #7b2cbf;
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-left: 5px solid #d1aaff;
+  padding: 14px 14px !important;
+  font-size: 1.05rem;
+}
+
+/* === Sub-Class Colors (10+ per Pantone Card) === */
+
+/* Cash - Green Palette (Pantone 354C) */
+.color-cash-0 { color: #00a651; }
+.color-cash-1 { color: #238636; }
+.color-cash-2 { color: #3fb950; }
+.color-cash-3 { color: #7ee787; }
+.color-cash-4 { color: #26a559; }
+.color-cash-5 { color: #2d9c5c; }
+.color-cash-6 { color: #248f3d; }
+.color-cash-7 { color: #5ac465; }
+.color-cash-8 { color: #6cd77d; }
+.color-cash-9 { color: #27ae60; }
+.color-cash-10 { color: #1e8449; }
+
+/* ETFs - Blue Palette (Pantone 285C) */
+.color-etfs-0 { color: #1f77d4; }
+.color-etfs-1 { color: #3498db; }
+.color-etfs-2 { color: #58a6ff; }
+.color-etfs-3 { color: #79c0ff; }
+.color-etfs-4 { color: #1e55b8; }
+.color-etfs-5 { color: #2e86c1; }
+.color-etfs-6 { color: #2471a3; }
+.color-etfs-7 { color: #3fa3ec; }
+.color-etfs-8 { color: #5baee8; }
+.color-etfs-9 { color: #7cbfff; }
+.color-etfs-10 { color: #0d47a1; }
+
+/* Playground - Orange Palette (Pantone 137C) */
+.color-playground-0 { color: #fb8500; }
+.color-playground-1 { color: #f39c12; }
+.color-playground-2 { color: #f1c40f; }
+.color-playground-3 { color: #ffa198; }
+.color-playground-4 { color: #ffbe76; }
+.color-playground-5 { color: #f8c291; }
+.color-playground-6 { color: #ff9800; }
+.color-playground-7 { color: #ffc048; }
+.color-playground-8 { color: #ffa801; }
+.color-playground-9 { color: #ff8c00; }
+.color-playground-10 { color: #e67e22; }
+
+/* U.S. Bond - Purple Palette (Pantone 2587C) */
+.color-bond-0 { color: #7b2cbf; }
+.color-bond-1 { color: #8e44ad; }
+.color-bond-2 { color: #d1aaff; }
+.color-bond-3 { color: #a569bd; }
+.color-bond-4 { color: #bb8fce; }
+.color-bond-5 { color: #b372c2; }
+.color-bond-6 { color: #c39bd3; }
+.color-bond-7 { color: #a29bfe; }
+.color-bond-8 { color: #b2bec3; }
+.color-bond-9 { color: #dff9fb; }
+.color-bond-10 { color: #6c3483; }
+
+/* Summary Section */
+.summary {
+  background-color: #161b22;
+  border: 2px solid #238636;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 0 20px rgba(35, 134, 54, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.05rem;
+  padding: 12px;
+  border-radius: 4px;
+  border-left: 4px solid transparent;
+}
+
+.summary-item.total {
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-left-color: #238636;
+  background-color: #0d2818;
+}
+
+.summary-item .label {
+  color: #79c0ff;
+  font-weight: 600;
+}
+
+.summary-item .value {
+  color: #238636;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* Summary items for each class */
+.summary-item.class-Cash {
+  border-left-color: #00a651;
+}
+
+.summary-item.class-Cash .value {
+  color: #00a651;
+}
+
+.summary-item.class-ETFs {
+  border-left-color: #1f77d4;
+}
+
+.summary-item.class-ETFs .value {
+  color: #1f77d4;
+}
+
+.summary-item.class-Playground {
+  border-left-color: #fb8500;
+}
+
+.summary-item.class-Playground .value {
+  color: #fb8500;
+}
+
+.summary-item.class-USBond {
+  border-left-color: #7b2cbf;
+}
+
+.summary-item.class-USBond .value {
+  color: #7b2cbf;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #30363d;
+  color: #8b949e;
+  font-size: 0.85rem;
+}
+
+.footer-text {
+  margin: 0;
+}
+
+/* Error and Info Boxes */
+.error {
+  background-color: #da3633;
+  color: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.info {
+  background-color: #1f6feb;
+  color: #ffffff;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  table {
+    font-size: 0.85rem;
+  }
+
+  th,
+  td {
+    padding: 10px 8px;
+  }
+
+  .chart-container {
+    padding: 15px;
+  }
+
+  canvas {
+    max-height: 280px;
+  }
+
+  .summary-item {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .summary-item .value {
+    font-size: 1rem;
+    align-self: flex-end;
+  }
+
+  .summary-item.total {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  table {
+    font-size: 0.75rem;
+  }
+
+  th,
+  td {
+    padding: 8px 6px;
+  }
+
+  .summary-item .value {
+    font-size: 0.95rem;
+  }
+
+  .summary-item.total {
+    font-size: 1rem;
+  }
+
+  canvas {
+    max-height: 220px;
+  }
+
+  .class-header-Cash,
+  .class-header-ETFs,
+  .class-header-Playground,
+  .class-header-USBond {
+    font-size: 0.95rem;
+    padding: 10px 8px !important;
+  }
+}* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #0d1117;
+  color: #c9d1d9;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'monospace';
   font-size: 14px;
   line-height: 1.6;
