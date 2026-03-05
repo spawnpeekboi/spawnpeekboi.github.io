@@ -112,22 +112,28 @@ async function buildPortfolio() {
   let chartData = [];
   let chartColors = [];
   let chartBorders = [];
+  let chartBorderWidths = [];
   let valueByClass = {};
   let totalValue = 0;
 
   // Class names in order
   const classNames = ['Cash', 'ETFs', 'Playground', 'Bond'];
+  
+  // Track which class each segment belongs to
+  let classSegmentMap = {}; // maps index to className
 
   // Process each main class
   for (const className of classNames) {
     const entries = holdingsData[className] || [];
     const classColorConfig = getClassColors(className);
     let classValue = 0;
+    let isFirstSegmentInClass = true;
 
     for (let i = 0; i < entries.length; i++) {
       const entry = entries[i];
       let itemValue = 0;
       let price = 0;
+      const segmentIndex = chartLabels.length;
 
       if (entry.type === 'stock') {
         price = await fetchStockPrice(entry.symbol, apiKey);
@@ -171,7 +177,16 @@ async function buildPortfolio() {
       chartData.push(parseFloat(itemValue.toFixed(2)));
       chartColors.push(classColorConfig.subColors[i % classColorConfig.subColors.length]);
       chartBorders.push(classColorConfig.dominant);
-
+      
+      // First segment of class gets thicker border
+      if (isFirstSegmentInClass) {
+        chartBorderWidths.push(6);
+        isFirstSegmentInClass = false;
+      } else {
+        chartBorderWidths.push(3);
+      }
+      
+      classSegmentMap[segmentIndex] = className;
       classValue += itemValue;
       totalValue += itemValue;
     }
@@ -186,7 +201,7 @@ async function buildPortfolio() {
 
   // Render everything
   renderTable(portfolio, totalValue);
-  renderChart(chartLabels, chartData, chartColors, chartBorders);
+  renderChart(chartLabels, chartData, chartColors, chartBorders, chartBorderWidths);
   updateSummary(totalValue, valueByClass);
 }
 
@@ -258,7 +273,7 @@ function renderTable(portfolio, totalValue) {
 }
 
 // Render pie chart with class outlines
-function renderChart(labels, data, colors, borders) {
+function renderChart(labels, data, colors, borders, borderWidths) {
   const ctx = document.getElementById('portfolioChart').getContext('2d');
   
   if (window.portfolioChart instanceof Chart) {
@@ -273,7 +288,7 @@ function renderChart(labels, data, colors, borders) {
         data: data,
         backgroundColor: colors,
         borderColor: borders,
-        borderWidth: 3
+        borderWidth: borderWidths
       }]
     },
     options: {
