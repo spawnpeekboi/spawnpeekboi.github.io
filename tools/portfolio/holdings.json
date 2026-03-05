@@ -10,7 +10,7 @@
     { "symbol": "TQQQ", "units": 2, "type": "stock" },
     { "symbol": "AAPL", "units": 1, "type": "stock" }
   ],
-  "U.S. Bond": [
+  "Bond": [
     { "symbol": "GOVT", "units": 20, "type": "stock" },
     { "symbol": "VGLT", "units": 5, "type": "stock" }
   ]
