@@ -1,0 +1,27 @@
+[
+  {
+    "symbol": "AAPL",
+    "units": 10,
+    "type": "stock"
+  },
+  {
+    "symbol": "TSLA",
+    "units": 5,
+    "type": "stock"
+  },
+  {
+    "symbol": "MSFT",
+    "units": 3,
+    "type": "stock"
+  },
+  {
+    "symbol": "USD",
+    "amount": 5000,
+    "type": "cash"
+  },
+  {
+    "symbol": "HKD",
+    "amount": 10000,
+    "type": "cash"
+  }
+]

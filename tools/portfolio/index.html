@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>US Stock Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📊 Stock Portfolio</h1>
+      <p class="subtitle">Real-time Holdings & Valuation</p>
+    </header>
+
+    <div class="chart-container">
+      <canvas id="portfolioChart"></canvas>
+    </div>
+
+    <section class="holdings-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Current Price</th>
+            <th>Units</th>
+            <th>Total Value</th>
+            <th>%</th>
+          </tr>
+        </thead>
+        <tbody id="holdings-body">
+          <tr>
+            <td colspan="5" class="loading">Loading portfolio...</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="summary">
+      <div class="summary-item">
+        <span class="label">Portfolio Value:</span>
+        <span class="value" id="total-value">$0.00</span>
+      </div>
+    </section>
+
+    <footer>
+      <p class="footer-text">Powered by Finnhub API</p>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  <script src="portfolio.js"></script>
+</body>
+</html>
