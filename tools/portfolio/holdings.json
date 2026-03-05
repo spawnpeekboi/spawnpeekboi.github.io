@@ -1,32 +1,16 @@
-[
-  {
-    "symbol": "AAPL",
-    "units": 1,
-    "type": "stock"
-  },
-  {
-    "symbol": "TQQQ",
-    "units": 2,
-    "type": "stock"
-  },
-  {
-    "symbol": "VGLT",
-    "units": 5,
-    "type": "stock"
-  },
-  {
-    "symbol": "GOVT",
-    "units": 20,
-    "type": "stock"
-  },
-  {
-    "symbol": "USD",
-    "amount": 247.50,
-    "type": "cash"
-  },
-  {
-    "symbol": "HKD",
-    "amount": 9520.91,
-    "type": "cash"
-  }
-]
+{
+  "Cash": [
+    { "symbol": "USD", "amount": 247.50, "type": "cash" },
+    { "symbol": "HKD", "amount": 9520.91, "type": "cash" }
+  ],
+  "ETFs": [
+    { "symbol": "TQQQ", "units": 2, "type": "stock" },
+    { "symbol": "VGLT", "units": 5, "type": "stock" }
+  ],
+  "Playground": [
+    { "symbol": "AAPL", "units": 1, "type": "stock" }
+  ],
+  "U.S. Bond": [
+    { "symbol": "GOVT", "units": 20, "type": "stock" }
+  ]
+}
