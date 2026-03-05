@@ -1,9 +1,0 @@
-{
-  "stocks": [
-  {"symbol": "AAPL", "shares": 1},
-  {"symbol": "AMD", "shares": 0.5},
-  {"symbol": "SQQQ", "shares": 3},
-  {"symbol": "GOVT", "shares": 20},
-  {"symbol": "VGLT", "shares": 5}
-]
-}
