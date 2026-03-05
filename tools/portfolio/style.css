@@ -41,19 +41,19 @@
   --color-Playground-sub9: #ff8c00;
   --color-Playground-sub10: #e67e22;
 
-  /* === U.S. Bond Class - Pantone 2587C (Vivid Purple) === */
-  --color-U.S. Bond-dominant: #7b2cbf;
-  --color-U.S. Bond-sub0: #7b2cbf;
-  --color-U.S. Bond-sub1: #8e44ad;
-  --color-U.S. Bond-sub2: #d1aaff;
-  --color-U.S. Bond-sub3: #a569bd;
-  --color-U.S. Bond-sub4: #bb8fce;
-  --color-U.S. Bond-sub5: #b372c2;
-  --color-U.S. Bond-sub6: #c39bd3;
-  --color-U.S. Bond-sub7: #a29bfe;
-  --color-U.S. Bond-sub8: #b2bec3;
-  --color-U.S. Bond-sub9: #dff9fb;
-  --color-U.S. Bond-sub10: #6c3483;
+  /* === U.S. Bond Class - Royal Blue Spectrum === */
+  --color-USBond-dominant: #4169e1;
+  --color-USBond-sub0: #4169e1;
+  --color-USBond-sub1: #5e7afa;
+  --color-USBond-sub2: #6475ec;
+  --color-USBond-sub3: #5378c9;
+  --color-USBond-sub4: #5763ae;
+  --color-USBond-sub5: #939bff;
+  --color-USBond-sub6: #2751be;
+  --color-USBond-sub7: #596fd3;
+  --color-USBond-sub8: #6d7fd7;
+  --color-USBond-sub9: #bac8fc;
+  --color-USBond-sub10: #3650a3;
 }
 
 * {
@@ -218,11 +218,11 @@ td:nth-child(5) {
 }
 
 .class-header-USBond {
-  background-color: var(--color-U.S. Bond-dominant);
+  background-color: var(--color-USBond-dominant);
   color: #ffffff;
   font-weight: 700;
   letter-spacing: 1px;
-  border-left: 5px solid #d1aaff;
+  border-left: 5px solid #bac8fc;
   padding: 14px 14px !important;
   font-size: 1.05rem;
 }
@@ -294,11 +294,11 @@ td:nth-child(5) {
 }
 
 .summary-item.class-USBond {
-  border-left-color: var(--color-U.S. Bond-dominant);
+  border-left-color: var(--color-USBond-dominant);
 }
 
 .summary-item.class-USBond .value {
-  color: var(--color-U.S. Bond-dominant);
+  color: var(--color-USBond-dominant);
 }
 
 /* Footer */
