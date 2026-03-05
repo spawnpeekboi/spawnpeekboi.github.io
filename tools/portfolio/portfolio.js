@@ -1,23 +1,3 @@
-// Class color definitions
-const CLASS_CONFIG = {
-  "Cash": {
-    dominant: "#2ecc40",
-    subColors: ["#27ae60", "#218c58", "#43d07b", "#51e06c", "#5fe76b", "#67f16c", "#74f586", "#8fffd7", "#baf0d6", "#5fc576"]
-  },
-  "ETFs": {
-    dominant: "#3498db",
-    subColors: ["#2980b9", "#2471a3", "#2e86c1", "#3fa3ec", "#57bbfb", "#70c1f5", "#90dcff", "#c1eaff", "#e2f6ff", "#1e8bc3"]
-  },
-  "Playground": {
-    dominant: "#f39c12",
-    subColors: ["#f1c40f", "#f6e58d", "#f9ca24", "#f8c291", "#ffbe76", "#ffa801", "#ffd32a", "#fffa65", "#ffc048", "#d68910"]
-  },
-  "U.S. Bond": {
-    dominant: "#8e44ad",
-    subColors: ["#6c3483", "#5b2c6f", "#a569bd", "#bb8fce", "#d2b4de", "#b372c2", "#a29bfe", "#b2bec3", "#dff9fb", "#7d3c98"]
-  }
-};
-
 // Get API key from URL query parameters
 function getApiKey() {
   const params = new URLSearchParams(window.location.search);
@@ -95,6 +75,22 @@ async function fetchHkdToUsd(apiKey) {
   }
 }
 
+// Get CSS variable colors for a class
+function getClassColors(className) {
+  const root = document.documentElement;
+  const colors = {
+    dominant: getComputedStyle(root).getPropertyValue(`--color-${className}-dominant`).trim(),
+    subColors: []
+  };
+  
+  for (let i = 0; i < 11; i++) {
+    const color = getComputedStyle(root).getPropertyValue(`--color-${className}-sub${i}`).trim();
+    if (color) colors.subColors.push(color);
+  }
+  
+  return colors;
+}
+
 // Main function to build portfolio
 async function buildPortfolio() {
   const apiKey = getApiKey();
@@ -111,9 +107,13 @@ async function buildPortfolio() {
   let valueByClass = {};
   let totalValue = 0;
 
+  // Class names in order
+  const classNames = ['Cash', 'ETFs', 'Playground', 'U.S. Bond'];
+
   // Process each main class
-  for (const className of Object.keys(CLASS_CONFIG)) {
+  for (const className of classNames) {
     const entries = holdingsData[className] || [];
+    const classColorConfig = getClassColors(className);
     let classValue = 0;
 
     for (let i = 0; i < entries.length; i++) {
@@ -161,8 +161,8 @@ async function buildPortfolio() {
       // Add to chart
       chartLabels.push(entry.symbol);
       chartData.push(parseFloat(itemValue.toFixed(2)));
-      chartColors.push(CLASS_CONFIG[className].subColors[i % CLASS_CONFIG[className].subColors.length]);
-      chartBorders.push(CLASS_CONFIG[className].dominant);
+      chartColors.push(classColorConfig.subColors[i % classColorConfig.subColors.length]);
+      chartBorders.push(classColorConfig.dominant);
 
       classValue += itemValue;
       totalValue += itemValue;
@@ -178,7 +178,7 @@ async function buildPortfolio() {
 
   // Render everything
   renderTable(portfolio, totalValue);
-  renderChart(chartLabels, chartData, chartColors, chartBorders, portfolio);
+  renderChart(chartLabels, chartData, chartColors, chartBorders);
   updateSummary(totalValue, valueByClass);
 }
 
@@ -194,19 +194,18 @@ function renderTable(portfolio, totalValue) {
     grouped[item.className].push(item);
   });
 
+  // Class names in order
+  const classNames = ['Cash', 'ETFs', 'Playground', 'U.S. Bond'];
+
   // Render each class
-  for (const className of Object.keys(CLASS_CONFIG)) {
+  for (const className of classNames) {
     const items = grouped[className] || [];
     if (items.length === 0) continue;
 
     // Class header row
     const headerRow = document.createElement('tr');
-    headerRow.style.backgroundColor = CLASS_CONFIG[className].dominant;
-    headerRow.style.color = '#ffffff';
-    headerRow.style.fontWeight = '700';
-    headerRow.innerHTML = `
-      <td colspan="5" style="padding: 12px 14px;">${className}</td>
-    `;
+    headerRow.className = `class-header-${className.replace(/\s+/g, '')}`;
+    headerRow.innerHTML = `<td colspan="5">${className}</td>`;
     tbody.appendChild(headerRow);
 
     // Items in this class
@@ -251,7 +250,7 @@ function renderTable(portfolio, totalValue) {
 }
 
 // Render pie chart with class outlines
-function renderChart(labels, data, colors, borders, portfolio) {
+function renderChart(labels, data, colors, borders) {
   const ctx = document.getElementById('portfolioChart').getContext('2d');
   
   if (window.portfolioChart instanceof Chart) {
@@ -286,7 +285,7 @@ function renderChart(labels, data, colors, borders, portfolio) {
             generateLabels: function(chart) {
               const data = chart.data;
               return data.labels.map((label, i) => ({
-                text: `${label}: ${data.datasets[0].data[i].toFixed(2)}`,
+                text: `${label}: $${data.datasets[0].data[i].toFixed(2)}`,
                 fillStyle: data.datasets[0].backgroundColor[i],
                 hidden: false,
                 index: i
@@ -316,19 +315,22 @@ function renderChart(labels, data, colors, borders, portfolio) {
 function updateSummary(totalValue, valueByClass) {
   const summaryDiv = document.querySelector('.summary');
   let summaryHtml = `
-    <div class="summary-item">
+    <div class="summary-item total">
       <span class="label">Total Portfolio Value:</span>
       <span class="value" id="total-value">$${totalValue.toFixed(2)}</span>
     </div>
   `;
 
-  for (const className of Object.keys(CLASS_CONFIG)) {
+  const classNames = ['Cash', 'ETFs', 'Playground', 'U.S. Bond'];
+  
+  for (const className of classNames) {
     const value = valueByClass[className] || 0;
     const percentage = ((value / totalValue) * 100).toFixed(2);
+    const classKey = className.replace(/\s+/g, '');
     summaryHtml += `
-      <div class="summary-item" style="border-left: 4px solid ${CLASS_CONFIG[className].dominant}; padding-left: 12px;">
+      <div class="summary-item class-${classKey}">
         <span class="label">${className}:</span>
-        <span class="value" style="color: ${CLASS_CONFIG[className].dominant};">$${value.toFixed(2)} (${percentage}%)</span>
+        <span class="value">$${value.toFixed(2)} (${percentage}%)</span>
       </div>
     `;
   }
