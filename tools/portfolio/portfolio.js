@@ -78,13 +78,14 @@ async function fetchHkdToUsd(apiKey) {
 // Get CSS variable colors for a class
 function getClassColors(className) {
   const root = document.documentElement;
+  const cssClassName = className.replace(/\s+/g, ''); // Remove spaces: "U.S. Bond" → "USBond"
   const colors = {
-    dominant: getComputedStyle(root).getPropertyValue(`--color-${className}-dominant`).trim(),
+    dominant: getComputedStyle(root).getPropertyValue(`--color-${cssClassName}-dominant`).trim(),
     subColors: []
   };
   
   for (let i = 0; i < 11; i++) {
-    const color = getComputedStyle(root).getPropertyValue(`--color-${className}-sub${i}`).trim();
+    const color = getComputedStyle(root).getPropertyValue(`--color-${cssClassName}-sub${i}`).trim();
     if (color) colors.subColors.push(color);
   }
   
@@ -216,7 +217,7 @@ function renderTable(portfolio, totalValue) {
       let unitsDisplay = item.units.toFixed(2);
 
       if (item.symbol === 'HKD') {
-        priceDisplay = `$${item.price.toFixed(4)}`;
+        priceDisplay = `$${item.price.toFixed(4)} (HKD/USD)`;
         unitsDisplay = `HK$${item.units.toFixed(0)}`;
       } else if (item.symbol === 'USD') {
         unitsDisplay = `$${item.units.toFixed(2)}`;
