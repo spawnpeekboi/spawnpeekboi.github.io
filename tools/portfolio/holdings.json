@@ -1,16 +1,18 @@
 {
   "Cash": [
-    { "symbol": "USD", "amount": 247.50, "type": "cash" },
+    { "symbol": "USD", "amount": 37.0, "type": "cash" },
     { "symbol": "HKD", "amount": 9520.91, "type": "cash" }
   ],
   "ETFs": [
-    { "symbol": "TQQQ", "units": 2, "type": "stock" },
-    { "symbol": "VGLT", "units": 5, "type": "stock" }
+
   ],
   "Playground": [
+    { "symbol": "TQQQ", "units": 2, "type": "stock" },
+    { "symbol": "SQQQ", "units": 3, "type": "stock" },
     { "symbol": "AAPL", "units": 1, "type": "stock" }
   ],
   "Bond": [
-    { "symbol": "GOVT", "units": 20, "type": "stock" }
+    { "symbol": "GOVT", "units": 20, "type": "stock" },
+    { "symbol": "VGLT", "units": 5, "type": "stock" }
   ]
 }
