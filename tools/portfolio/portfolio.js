@@ -1,3 +1,23 @@
+// Class color definitions
+const CLASS_CONFIG = {
+  "Cash": {
+    dominant: "#2ecc40",
+    subColors: ["#27ae60", "#218c58", "#43d07b", "#51e06c", "#5fe76b", "#67f16c", "#74f586", "#8fffd7", "#baf0d6", "#5fc576"]
+  },
+  "ETFs": {
+    dominant: "#3498db",
+    subColors: ["#2980b9", "#2471a3", "#2e86c1", "#3fa3ec", "#57bbfb", "#70c1f5", "#90dcff", "#c1eaff", "#e2f6ff", "#1e8bc3"]
+  },
+  "Playground": {
+    dominant: "#f39c12",
+    subColors: ["#f1c40f", "#f6e58d", "#f9ca24", "#f8c291", "#ffbe76", "#ffa801", "#ffd32a", "#fffa65", "#ffc048", "#d68910"]
+  },
+  "U.S. Bond": {
+    dominant: "#8e44ad",
+    subColors: ["#6c3483", "#5b2c6f", "#a569bd", "#bb8fce", "#d2b4de", "#b372c2", "#a29bfe", "#b2bec3", "#dff9fb", "#7d3c98"]
+  }
+};
+
 // Get API key from URL query parameters
 function getApiKey() {
   const params = new URLSearchParams(window.location.search);
@@ -20,15 +40,6 @@ function showError(message) {
   container.insertBefore(errorDiv, container.firstChild);
 }
 
-// Show info message
-function showInfo(message) {
-  const container = document.querySelector('.container');
-  const infoDiv = document.createElement('div');
-  infoDiv.className = 'info';
-  infoDiv.textContent = message;
-  container.insertBefore(infoDiv, container.querySelector('header').nextSibling);
-}
-
 // Fetch holdings from JSON file
 async function fetchHoldings() {
   try {
@@ -39,7 +50,7 @@ async function fetchHoldings() {
     return await response.json();
   } catch (error) {
     showError('❌ Error loading holdings: ' + error.message);
-    return [];
+    return {};
   }
 }
 
@@ -55,7 +66,7 @@ async function fetchStockPrice(symbol, apiKey) {
       throw new Error(`Invalid symbol or API response: ${symbol}`);
     }
     
-    return data.c; // Current price
+    return data.c;
   } catch (error) {
     console.error(`Error fetching price for ${symbol}:`, error);
     return 0;
@@ -70,19 +81,17 @@ async function fetchHkdToUsd(apiKey) {
     );
     const data = await response.json();
     
-    // Check if USD rate exists in the response
     if (data.quote && data.quote.USD) {
       return data.quote.USD;
     } else if (data.USD) {
       return data.USD;
     }
     
-    // Fallback: use approximate rate if API doesn't return it
     console.warn('Could not fetch HKD/USD rate, using approximate rate');
-    return 0.128; // Approximate HKD to USD rate
+    return 0.128;
   } catch (error) {
     console.error('Error fetching HKD/USD rate:', error);
-    return 0.128; // Fallback rate
+    return 0.128;
   }
 }
 
@@ -91,84 +100,86 @@ async function buildPortfolio() {
   const apiKey = getApiKey();
   if (!apiKey) return;
 
-  const holdings = await fetchHoldings();
-  if (holdings.length === 0) return;
+  const holdingsData = await fetchHoldings();
+  if (Object.keys(holdingsData).length === 0) return;
 
   let portfolio = [];
-  let hkdAmount = 0;
-  let usdAmount = 0;
+  let chartLabels = [];
+  let chartData = [];
+  let chartColors = [];
+  let chartBorders = [];
+  let valueByClass = {};
+  let totalValue = 0;
 
-  // Separate stocks and cash
-  const stocks = holdings.filter(h => h.type === 'stock');
-  const cashHoldings = holdings.filter(h => h.type === 'cash');
+  // Process each main class
+  for (const className of Object.keys(CLASS_CONFIG)) {
+    const entries = holdingsData[className] || [];
+    let classValue = 0;
 
-  // Process cash holdings
-  for (const cash of cashHoldings) {
-    if (cash.symbol === 'HKD') {
-      hkdAmount += cash.amount;
-    } else if (cash.symbol === 'USD') {
-      usdAmount += cash.amount;
+    for (let i = 0; i < entries.length; i++) {
+      const entry = entries[i];
+      let itemValue = 0;
+      let price = 0;
+
+      if (entry.type === 'stock') {
+        price = await fetchStockPrice(entry.symbol, apiKey);
+        itemValue = price * entry.units;
+        portfolio.push({
+          className,
+          symbol: entry.symbol,
+          price: price,
+          units: entry.units,
+          totalValue: itemValue,
+          type: 'stock'
+        });
+      } else if (entry.type === 'cash' && entry.symbol === 'USD') {
+        itemValue = entry.amount;
+        price = 1.00;
+        portfolio.push({
+          className,
+          symbol: 'USD',
+          price: price,
+          units: entry.amount,
+          totalValue: itemValue,
+          type: 'cash'
+        });
+      } else if (entry.type === 'cash' && entry.symbol === 'HKD') {
+        const hkdRate = await fetchHkdToUsd(apiKey);
+        itemValue = entry.amount * hkdRate;
+        price = hkdRate;
+        portfolio.push({
+          className,
+          symbol: 'HKD',
+          price: price,
+          units: entry.amount,
+          totalValue: itemValue,
+          type: 'cash',
+          originalAmount: entry.amount
+        });
+      }
+
+      // Add to chart
+      chartLabels.push(entry.symbol);
+      chartData.push(parseFloat(itemValue.toFixed(2)));
+      chartColors.push(CLASS_CONFIG[className].subColors[i % CLASS_CONFIG[className].subColors.length]);
+      chartBorders.push(CLASS_CONFIG[className].dominant);
+
+      classValue += itemValue;
+      totalValue += itemValue;
     }
+
+    valueByClass[className] = classValue;
   }
 
-  // Fetch HKD to USD rate if there's HKD cash
-  let hkdToUsdRate = 1;
-  if (hkdAmount > 0) {
-    hkdToUsdRate = await fetchHkdToUsd(apiKey);
-  }
-
-  // Convert HKD to USD
-  const hkdValueInUsd = hkdAmount * hkdToUsdRate;
-
-  // Fetch stock prices
-  for (const stock of stocks) {
-    const price = await fetchStockPrice(stock.symbol, apiKey);
-    const totalValue = price * stock.units;
-
-    portfolio.push({
-      symbol: stock.symbol,
-      price: price,
-      units: stock.units,
-      totalValue: totalValue,
-      type: 'stock'
-    });
-  }
-
-  // Add USD cash to portfolio
-  if (usdAmount > 0) {
-    portfolio.push({
-      symbol: 'USD Cash',
-      price: 1.00,
-      units: usdAmount,
-      totalValue: usdAmount,
-      type: 'cash'
-    });
-  }
-
-  // Add HKD cash (converted to USD) to portfolio
-  if (hkdAmount > 0) {
-    portfolio.push({
-      symbol: 'HKD Cash',
-      price: hkdToUsdRate,
-      units: hkdAmount,
-      totalValue: hkdValueInUsd,
-      type: 'cash',
-      originalAmount: hkdAmount
-    });
-  }
-
-  // Calculate total value
-  const totalValue = portfolio.reduce((sum, item) => sum + item.totalValue, 0);
-
-  // Calculate percentages
+  // Add percentages
   portfolio.forEach(item => {
     item.percentage = ((item.totalValue / totalValue) * 100).toFixed(2);
   });
 
-  // Render the portfolio
+  // Render everything
   renderTable(portfolio, totalValue);
-  renderChart(portfolio, totalValue);
-  updateSummary(totalValue);
+  renderChart(chartLabels, chartData, chartColors, chartBorders, portfolio);
+  updateSummary(totalValue, valueByClass);
 }
 
 // Render holdings table
@@ -176,30 +187,55 @@ function renderTable(portfolio, totalValue) {
   const tbody = document.getElementById('holdings-body');
   tbody.innerHTML = '';
 
+  // Group by class
+  const grouped = {};
   portfolio.forEach(item => {
-    const row = document.createElement('tr');
-    
-    let priceDisplay = `$${item.price.toFixed(2)}`;
-    let unitsDisplay = item.units.toFixed(2);
-
-    // Format HKD cash display
-    if (item.symbol === 'HKD Cash') {
-      priceDisplay = `$${item.price.toFixed(4)} (HKD/USD)`;
-      unitsDisplay = `HK$${item.units.toFixed(0)}`;
-    }
-
-    row.innerHTML = `
-      <td>${item.symbol}</td>
-      <td>${priceDisplay}</td>
-      <td>${unitsDisplay}</td>
-      <td>$${item.totalValue.toFixed(2)}</td>
-      <td>${item.percentage}%</td>
-    `;
-    
-    tbody.appendChild(row);
+    if (!grouped[item.className]) grouped[item.className] = [];
+    grouped[item.className].push(item);
   });
 
-  // Add total row
+  // Render each class
+  for (const className of Object.keys(CLASS_CONFIG)) {
+    const items = grouped[className] || [];
+    if (items.length === 0) continue;
+
+    // Class header row
+    const headerRow = document.createElement('tr');
+    headerRow.style.backgroundColor = CLASS_CONFIG[className].dominant;
+    headerRow.style.color = '#ffffff';
+    headerRow.style.fontWeight = '700';
+    headerRow.innerHTML = `
+      <td colspan="5" style="padding: 12px 14px;">${className}</td>
+    `;
+    tbody.appendChild(headerRow);
+
+    // Items in this class
+    items.forEach(item => {
+      const row = document.createElement('tr');
+      
+      let priceDisplay = `$${item.price.toFixed(2)}`;
+      let unitsDisplay = item.units.toFixed(2);
+
+      if (item.symbol === 'HKD') {
+        priceDisplay = `$${item.price.toFixed(4)}`;
+        unitsDisplay = `HK$${item.units.toFixed(0)}`;
+      } else if (item.symbol === 'USD') {
+        unitsDisplay = `$${item.units.toFixed(2)}`;
+      }
+
+      row.innerHTML = `
+        <td>${item.symbol}</td>
+        <td>${priceDisplay}</td>
+        <td>${unitsDisplay}</td>
+        <td>$${item.totalValue.toFixed(2)}</td>
+        <td>${item.percentage}%</td>
+      `;
+      
+      tbody.appendChild(row);
+    });
+  }
+
+  // Total row
   const totalRow = document.createElement('tr');
   totalRow.style.fontWeight = '700';
   totalRow.style.backgroundColor = '#0d1117';
@@ -214,29 +250,10 @@ function renderTable(portfolio, totalValue) {
   tbody.appendChild(totalRow);
 }
 
-// Render pie chart
-function renderChart(portfolio, totalValue) {
-  const labels = portfolio.map(item => item.symbol);
-  const data = portfolio.map(item => parseFloat(item.percentage));
-  
-  const colors = [
-    '#58a6ff',
-    '#79c0ff',
-    '#1f6feb',
-    '#238636',
-    '#3fb950',
-    '#7ee787',
-    '#d1aaff',
-    '#f0883e',
-    '#fb8500',
-    '#f85149',
-    '#ffa198',
-    '#ff7b72'
-  ];
-
+// Render pie chart with class outlines
+function renderChart(labels, data, colors, borders, portfolio) {
   const ctx = document.getElementById('portfolioChart').getContext('2d');
   
-  // Destroy existing chart if it exists
   if (window.portfolioChart instanceof Chart) {
     window.portfolioChart.destroy();
   }
@@ -247,9 +264,9 @@ function renderChart(portfolio, totalValue) {
       labels: labels,
       datasets: [{
         data: data,
-        backgroundColor: colors.slice(0, labels.length),
-        borderColor: '#0d1117',
-        borderWidth: 2
+        backgroundColor: colors,
+        borderColor: borders,
+        borderWidth: 3
       }]
     },
     options: {
@@ -269,7 +286,7 @@ function renderChart(portfolio, totalValue) {
             generateLabels: function(chart) {
               const data = chart.data;
               return data.labels.map((label, i) => ({
-                text: `${label}: ${data.datasets[0].data[i]}%`,
+                text: `${label}: ${data.datasets[0].data[i].toFixed(2)}`,
                 fillStyle: data.datasets[0].backgroundColor[i],
                 hidden: false,
                 index: i
@@ -283,32 +300,43 @@ function renderChart(portfolio, totalValue) {
           bodyColor: '#c9d1d9',
           borderColor: '#30363d',
           borderWidth: 1,
-          titleFont: {
-            family: "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'monospace'",
-            size: 13,
-            weight: '600'
-          },
-          bodyFont: {
-            family: "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'monospace'",
-            size: 12
-          },
           callbacks: {
             label: function(context) {
-              return `${context.label}: ${context.parsed}%`;
+              return `$${context.parsed.toFixed(2)}`;
             }
           }
         }
-      }
+      },
+      cutout: '70%'
     }
   });
 }
 
-// Update summary section
-function updateSummary(totalValue) {
-  document.getElementById('total-value').textContent = `$${totalValue.toFixed(2)}`;
+// Update summary with class breakdown
+function updateSummary(totalValue, valueByClass) {
+  const summaryDiv = document.querySelector('.summary');
+  let summaryHtml = `
+    <div class="summary-item">
+      <span class="label">Total Portfolio Value:</span>
+      <span class="value" id="total-value">$${totalValue.toFixed(2)}</span>
+    </div>
+  `;
+
+  for (const className of Object.keys(CLASS_CONFIG)) {
+    const value = valueByClass[className] || 0;
+    const percentage = ((value / totalValue) * 100).toFixed(2);
+    summaryHtml += `
+      <div class="summary-item" style="border-left: 4px solid ${CLASS_CONFIG[className].dominant}; padding-left: 12px;">
+        <span class="label">${className}:</span>
+        <span class="value" style="color: ${CLASS_CONFIG[className].dominant};">$${value.toFixed(2)} (${percentage}%)</span>
+      </div>
+    `;
+  }
+
+  summaryDiv.innerHTML = summaryHtml;
 }
 
-// Initialize portfolio on page load
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
   buildPortfolio();
 });
