@@ -78,19 +78,26 @@ async function fetchHkdToUsd(apiKey) {
 // Get CSS variable colors for a class
 function getClassColors(className) {
   const root = document.documentElement;
-  const cssClassName = className.replace(/\s+/g, ''); // Remove spaces: "U.S. Bond" → "USBond"
   const colors = {
-    dominant: getComputedStyle(root).getPropertyValue(`--color-${cssClassName}-dominant`).trim(),
+    dominant: getComputedStyle(root).getPropertyValue(`--color-${className}-dominant`).trim(),
     subColors: []
   };
   
   for (let i = 0; i < 11; i++) {
-    const color = getComputedStyle(root).getPropertyValue(`--color-${cssClassName}-sub${i}`).trim();
+    const color = getComputedStyle(root).getPropertyValue(`--color-${className}-sub${i}`).trim();
     if (color) colors.subColors.push(color);
   }
   
   return colors;
 }
+
+// Map internal class name to display name
+const classDisplayName = {
+  'Cash': 'Cash',
+  'ETFs': 'ETFs',
+  'Playground': 'Playground',
+  'Bond': 'U.S. Bond'
+};
 
 // Main function to build portfolio
 async function buildPortfolio() {
@@ -109,7 +116,7 @@ async function buildPortfolio() {
   let totalValue = 0;
 
   // Class names in order
-  const classNames = ['Cash', 'ETFs', 'Playground', 'U.S. Bond'];
+  const classNames = ['Cash', 'ETFs', 'Playground', 'Bond'];
 
   // Process each main class
   for (const className of classNames) {
@@ -196,7 +203,7 @@ function renderTable(portfolio, totalValue) {
   });
 
   // Class names in order
-  const classNames = ['Cash', 'ETFs', 'Playground', 'U.S. Bond'];
+  const classNames = ['Cash', 'ETFs', 'Playground', 'Bond'];
 
   // Render each class
   for (const className of classNames) {
@@ -205,8 +212,8 @@ function renderTable(portfolio, totalValue) {
 
     // Class header row
     const headerRow = document.createElement('tr');
-    headerRow.className = `class-header-${className.replace(/\s+/g, '')}`;
-    headerRow.innerHTML = `<td colspan="5">${className}</td>`;
+    headerRow.className = `class-header-${className}`;
+    headerRow.innerHTML = `<td colspan="5">${classDisplayName[className]}</td>`;
     tbody.appendChild(headerRow);
 
     // Items in this class
@@ -322,15 +329,14 @@ function updateSummary(totalValue, valueByClass) {
     </div>
   `;
 
-  const classNames = ['Cash', 'ETFs', 'Playground', 'U.S. Bond'];
+  const classNames = ['Cash', 'ETFs', 'Playground', 'Bond'];
   
   for (const className of classNames) {
     const value = valueByClass[className] || 0;
     const percentage = ((value / totalValue) * 100).toFixed(2);
-    const classKey = className.replace(/\s+/g, '');
     summaryHtml += `
-      <div class="summary-item class-${classKey}">
-        <span class="label">${className}:</span>
+      <div class="summary-item class-${className}">
+        <span class="label">${classDisplayName[className]}:</span>
         <span class="value">$${value.toFixed(2)} (${percentage}%)</span>
       </div>
     `;
