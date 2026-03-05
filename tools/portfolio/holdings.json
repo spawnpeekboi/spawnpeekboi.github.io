@@ -1,27 +1,32 @@
 [
   {
     "symbol": "AAPL",
-    "units": 10,
+    "units": 1,
     "type": "stock"
   },
   {
-    "symbol": "TSLA",
+    "symbol": "TQQQ",
+    "units": 2,
+    "type": "stock"
+  },
+  {
+    "symbol": "VGLT",
     "units": 5,
     "type": "stock"
   },
   {
-    "symbol": "MSFT",
-    "units": 3,
+    "symbol": "GOVT",
+    "units": 20,
     "type": "stock"
   },
   {
     "symbol": "USD",
-    "amount": 5000,
+    "amount": 247.50,
     "type": "cash"
   },
   {
     "symbol": "HKD",
-    "amount": 10000,
+    "amount": 9,520.91,
     "type": "cash"
   }
 ]
