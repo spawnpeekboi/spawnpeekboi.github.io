@@ -41,19 +41,19 @@
   --color-Playground-sub9: #ff8c00;
   --color-Playground-sub10: #e67e22;
 
-  /* === U.S. Bond Class - Royal Blue Spectrum === */
-  --color-USBond-dominant: #4169e1;
-  --color-USBond-sub0: #4169e1;
-  --color-USBond-sub1: #5e7afa;
-  --color-USBond-sub2: #6475ec;
-  --color-USBond-sub3: #5378c9;
-  --color-USBond-sub4: #5763ae;
-  --color-USBond-sub5: #939bff;
-  --color-USBond-sub6: #2751be;
-  --color-USBond-sub7: #596fd3;
-  --color-USBond-sub8: #6d7fd7;
-  --color-USBond-sub9: #bac8fc;
-  --color-USBond-sub10: #3650a3;
+  /* === Bond Class - Royal Blue Spectrum === */
+  --color-Bond-dominant: #4169e1;
+  --color-Bond-sub0: #4169e1;
+  --color-Bond-sub1: #5e7afa;
+  --color-Bond-sub2: #6475ec;
+  --color-Bond-sub3: #5378c9;
+  --color-Bond-sub4: #5763ae;
+  --color-Bond-sub5: #939bff;
+  --color-Bond-sub6: #2751be;
+  --color-Bond-sub7: #596fd3;
+  --color-Bond-sub8: #6d7fd7;
+  --color-Bond-sub9: #bac8fc;
+  --color-Bond-sub10: #3650a3;
 }
 
 * {
@@ -217,8 +217,8 @@ td:nth-child(5) {
   font-size: 1.05rem;
 }
 
-.class-header-USBond {
-  background-color: var(--color-USBond-dominant);
+.class-header-Bond {
+  background-color: var(--color-Bond-dominant);
   color: #ffffff;
   font-weight: 700;
   letter-spacing: 1px;
@@ -293,12 +293,12 @@ td:nth-child(5) {
   color: var(--color-Playground-dominant);
 }
 
-.summary-item.class-USBond {
-  border-left-color: var(--color-USBond-dominant);
+.summary-item.class-Bond {
+  border-left-color: var(--color-Bond-dominant);
 }
 
-.summary-item.class-USBond .value {
-  color: var(--color-USBond-dominant);
+.summary-item.class-Bond .value {
+  color: var(--color-Bond-dominant);
 }
 
 /* Footer */
@@ -412,7 +412,7 @@ footer {
   .class-header-Cash,
   .class-header-ETFs,
   .class-header-Playground,
-  .class-header-USBond {
+  .class-header-Bond {
     font-size: 0.95rem;
     padding: 10px 8px !important;
   }
