@@ -1,6 +1,6 @@
 {
   "Cash": [
-    { "symbol": "USD", "amount": 37, "type": "cash" },
+    { "symbol": "USD", "amount": 37.0, "type": "cash" },
     { "symbol": "HKD", "amount": 9520.91, "type": "cash" }
   ],
   "ETFs": [
