@@ -12,7 +12,7 @@
     { "symbol": "AAPL", "units": 1, "type": "stock" }
   ],
   "Bond": [
-    { "symbol": "GOVT", "units": 20, "type": "stock" },
+    { "symbol": "GOVT", "units": 20.039, "type": "stock" },
     { "symbol": "VGLT", "units": 5, "type": "stock" }
   ]
 }
