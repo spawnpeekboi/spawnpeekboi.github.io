@@ -54,6 +54,12 @@
   --color-Bond-sub8: #6d7fd7;
   --color-Bond-sub9: #bac8fc;
   --color-Bond-sub10: #3650a3;
+
+  /* iOS Large Widget Dimensions */
+  --ios-widget-width: 364px;
+  --ios-widget-height: 382px;
+  --ios-chart-size: 280px;
+  --ios-value-widget-height: 340px;
 }
 
 * {
@@ -62,8 +68,14 @@
   box-sizing: border-box;
 }
 
+html,
 body {
+  width: 100%;
+  height: 100%;
   background-color: #0d1117;
+}
+
+body {
   color: #c9d1d9;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
   font-size: 14px;
@@ -75,14 +87,20 @@ body {
 }
 
 .widget-container {
-  max-width: 400px;
+  width: 100%;
+  max-width: var(--ios-widget-width);
   margin: 0 auto;
-  padding: 16px;
+  padding: 0 16px 16px 16px;
   background-color: #0d1117;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+/* Spacer for top padding (500px) */
+.widget-spacer {
+  height: 500px;
+  width: 100%;
 }
 
 /* Widget Header */
@@ -108,25 +126,31 @@ body {
   flex: 1;
 }
 
-/* Pie Chart Widget - iOS Large Widget Size */
+/* Pie Chart Widget - Auto-sized for iOS Large Widget */
 .chart-widget {
   background-color: #161b22;
   border: 1px solid #30363d;
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  min-height: 340px;
+  width: 100%;
+  max-width: var(--ios-widget-width);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
+  aspect-ratio: 1 / 1;
+  min-height: 340px;
+  max-height: 380px;
 }
 
 #portfolioChart {
-  width: 280px !important;
-  height: 280px !important;
+  width: var(--ios-chart-size) !important;
+  height: var(--ios-chart-size) !important;
   display: block;
+  max-width: 90%;
+  max-height: 90%;
 }
 
 /* Chart Labels - Always Visible */
@@ -135,20 +159,22 @@ body {
   margin-top: 12px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   justify-content: center;
   align-items: center;
+  padding: 0 8px;
 }
 
 .chart-label-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
-  padding: 4px 8px;
+  gap: 5px;
+  font-size: 0.7rem;
+  padding: 3px 6px;
   background-color: #0d1117;
   border-radius: 4px;
   border: 1px solid #30363d;
+  white-space: nowrap;
 }
 
 .chart-label-color {
@@ -156,6 +182,7 @@ body {
   height: 8px;
   border-radius: 2px;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .chart-label-text {
@@ -176,7 +203,9 @@ body {
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  min-height: 280px;
+  width: 100%;
+  max-width: var(--ios-widget-width);
+  height: var(--ios-value-widget-height);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -194,18 +223,36 @@ body {
 }
 
 .total-value {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: #238636;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   text-align: center;
   line-height: 1.2;
+  word-break: break-word;
 }
 
 .class-breakdown {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.class-breakdown::-webkit-scrollbar {
+  width: 4px;
+}
+
+.class-breakdown::-webkit-scrollbar-track {
+  background: #0d1117;
+  border-radius: 2px;
+}
+
+.class-breakdown::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 2px;
 }
 
 .breakdown-item {
@@ -216,17 +263,20 @@ body {
   background-color: #0d1117;
   border-radius: 6px;
   border-left: 4px solid transparent;
+  gap: 8px;
 }
 
 .breakdown-item-label {
   color: #c9d1d9;
   font-size: 0.85rem;
   font-weight: 500;
+  flex-grow: 1;
 }
 
 .breakdown-item-value {
   font-weight: 700;
   font-size: 0.95rem;
+  white-space: nowrap;
 }
 
 .breakdown-item.class-Cash {
@@ -286,42 +336,38 @@ body {
   font-size: 0.85rem;
 }
 
-/* iOS Widget Optimizations */
+/* iOS Widget Safe Area Support */
 @supports (padding: max(0px)) {
   .widget-container {
-    padding: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-top));
+    padding: 0 max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom));
   }
 }
 
-/* Ensure widgets are visible at different sizes */
-@media (max-width: 500px) {
-  .widget-container {
-    padding: 12px;
-    gap: 12px;
+/* Responsive adjustments for different screen sizes */
+@media (max-width: 400px) {
+  :root {
+    --ios-widget-width: 100%;
+    --ios-chart-size: 240px;
+    --ios-value-widget-height: 320px;
   }
 
   .chart-widget {
     min-height: 320px;
-    padding: 12px;
-  }
-
-  #portfolioChart {
-    width: 240px !important;
-    height: 240px !important;
-  }
-
-  .chart-label-item {
-    font-size: 0.7rem;
-    padding: 3px 6px;
+    max-height: 360px;
   }
 
   .value-widget {
-    min-height: 260px;
-    padding: 16px;
+    height: var(--ios-value-widget-height);
+  }
+
+  .chart-label-item {
+    font-size: 0.65rem;
+    padding: 2px 5px;
+    gap: 4px;
   }
 
   .total-value {
-    font-size: 1.8rem;
+    font-size: 1.9rem;
   }
 
   .breakdown-item {
@@ -337,30 +383,53 @@ body {
   }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 370px) {
+  :root {
+    --ios-chart-size: 200px;
+    --ios-value-widget-height: 300px;
+  }
+
   .widget-header h1 {
     font-size: 1.2rem;
   }
 
   .chart-widget {
-    min-height: 300px;
-  }
-
-  #portfolioChart {
-    width: 200px !important;
-    height: 200px !important;
-  }
-
-  .chart-label-item {
-    font-size: 0.65rem;
-    padding: 2px 4px;
+    min-height: 280px;
+    max-height: 320px;
+    padding: 12px;
   }
 
   .total-value {
-    font-size: 1.6rem;
+    font-size: 1.7rem;
+    margin-bottom: 12px;
+  }
+
+  .chart-label-item {
+    font-size: 0.6rem;
+    padding: 2px 4px;
   }
 
   .breakdown-item-label {
     font-size: 0.75rem;
+  }
+
+  .breakdown-item-value {
+    font-size: 0.85rem;
+  }
+}
+
+/* Landscape mode adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+  .widget-spacer {
+    height: 200px;
+  }
+
+  .chart-widget {
+    min-height: 280px;
+    max-height: 300px;
+  }
+
+  .value-widget {
+    height: 280px;
   }
 }
