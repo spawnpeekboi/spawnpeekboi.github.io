@@ -180,7 +180,7 @@ async function buildPortfolio() {
       
       // First segment of class gets thicker border
       if (isFirstSegmentInClass) {
-        chartBorderWidths.push(6);
+        chartBorderWidths.push(12);
         isFirstSegmentInClass = false;
       } else {
         chartBorderWidths.push(3);
