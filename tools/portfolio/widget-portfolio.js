@@ -17,7 +17,7 @@ function showError(message) {
   const errorDiv = document.createElement('div');
   errorDiv.className = 'error';
   errorDiv.textContent = message;
-  container.insertBefore(errorDiv, container.firstChild);
+  container.insertBefore(errorDiv, container.querySelector('.widget-header'));
 }
 
 // Fetch holdings from JSON file
