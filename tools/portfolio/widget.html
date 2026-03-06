@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Widget</title>
+  <link rel="stylesheet" href="widget-style.css">
+</head>
+<body>
+  <div class="widget-container">
+    <div class="widget-header">
+      <h1>Portfolio</h1>
+    </div>
+
+    <div class="widget-content">
+      <!-- Pie Chart Widget -->
+      <div class="chart-widget">
+        <canvas id="portfolioChart"></canvas>
+        <div class="chart-labels" id="chartLabels"></div>
+      </div>
+
+      <!-- Total Value Widget -->
+      <div class="value-widget">
+        <div class="value-widget-header">Total Value</div>
+        <div class="total-value" id="totalValue">$0.00</div>
+        <div class="class-breakdown" id="classBreakdown"></div>
+      </div>
+    </div>
+
+    <div class="widget-footer">
+      <p class="footer-text">Updated via Finnhub API</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  <script src="widget-portfolio.js"></script>
+</body>
+</html>
